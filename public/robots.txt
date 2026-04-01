@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sixstorm.onrender.com/sitemap.xml

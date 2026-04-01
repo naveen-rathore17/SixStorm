@@ -7,6 +7,11 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const path = require('path')
 const helmet = require("helmet")
+const rateLimit = require("express-rate-limit")
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+})
 
 
 app.set("view engine", "ejs");
@@ -14,6 +19,7 @@ app.set("trust proxy", 1);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(helmet())
+app.use(limiter)
 app.use(require("helmet")({
 contentSecurityPolicy: false
 }));
@@ -29,6 +35,12 @@ app.use(
     }
   })
 )
+app.use((req,res,next)=>{
+  res.setHeader("X-Content-Type-Options","nosniff")
+  res.setHeader("X-Frame-Options","DENY")
+  res.setHeader("X-XSS-Protection","1; mode=block")
+  next()
+})
 
 
 // Routes
