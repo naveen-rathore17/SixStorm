@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SixStorm provides live cricket streaming access, match updates, and sports coverage from publicly available sources."
+    />
+
+    <meta
+      name="keywords"
+      content="cricket live, cricket streaming, live cricket match, IPL live, cricket watch online"
+    />
+
+    <meta name="author" content="Naveen Rathore" />
+
+    <meta property="og:title" content="SixStorm Live Cricket Streaming" />
+
+    <meta
+      property="og:description"
+      content="Watch live cricket matches and stay updated with match coverage."
+    />
+
+    <meta property="og:type" content="website" />
+
+    <meta property="og:url" content="https://yourdomain.com" />
+
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/images/logo.png"
+    />
+
+    <meta name="robots" content="index, follow" />
+
+    <title>SixStorm Live</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="bg-gradient-to-r from-black via-blue-950 to-black min-h-screen text-white flex flex-col"
+  >
+    <!-- Navbar -->
+    <nav
+      class="flex justify-between items-center px-6 py-4 bg-black/60 backdrop-blur-md"
+    >
+      <a href="/" class="text-2xl md:text-3xl font-bold">
+        <span
+          class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+          >Six</span
+        ><span class="text-white">Storm</span>
+      </a>
+
+      <!-- Desktop Menu -->
+      <div class="space-x-4 text-sm hidden md:block">
+        <a href="/" class="hover:text-red-400 transition">Home</a>
+        <a href="/help" class="hover:text-red-400 transition">Help</a>
+        <a href="/legal" class="hover:text-red-400 transition">Disclaimer</a>
+        <a href="/privacy-policy" class="hover:text-red-400 transition"
+          >Privacy</a
+        >
+        <a href="/contact-us" class="hover:text-red-400 transition">Contact</a>
+      </div>
+
+      <!-- Mobile Toggle Button -->
+      <button id="menuBtn" class="md:hidden text-2xl">☰</button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-black/90 backdrop-blur-md">
+      <div class="flex flex-col items-center py-4 space-y-3">
+        <a href="/" class="hover:text-red-400">Home</a>
+        <a href="/help" class="hover:text-red-400">Help</a>
+        <a href="/legal" class="hover:text-red-400">Disclaimer</a>
+        <a href="/privacy-policy" class="hover:text-red-400">Privacy</a>
+        <a href="/contact-us" class="hover:text-red-400">Contact</a>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+      <!-- Title -->
+      <div class="text-center mt-8 px-4">
+        <h1 class="text-2xl md:text-5xl font-bold">
+          🏏 Live Cricket Streaming
+        </h1>
+        <p class="text-gray-400 mt-2 text-sm">Watch cricket match live in HD</p>
+      </div>
+
+      <!-- Player -->
+      <div class="flex justify-center mt-8 px-4">
+        <div
+          class="bg-black/70 p-4 md:p-6 rounded-2xl shadow-2xl w-full max-w-5xl"
+        >
+          <div class="flex justify-between mb-3">
+            <span
+              class="bg-red-600 px-3 py-1 text-xs font-bold rounded-full animate-pulse"
+              >LIVE</span
+            >
+            <span class="text-xs text-gray-300">Streaming Now</span>
+          </div>
+
+          <div class="relative aspect-video w-full overflow-hidden rounded-xl">
+            <iframe
+              class="absolute top-0 left-0 w-full h-full"
+              src="<%=stream%>"
+              frameborder="0"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+              allowfullscreen
+              loading="lazy"
+              referrerpolicy="no-referrer"
+            ></iframe>
+          </div>
+
+          <p class="text-xs text-gray-400 text-center mt-3">
+            Streams are provided by third-party sources. We do not host any
+            content.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      class="bg-[#020617]/80 border-t border-white/10 text-center py-5 text-sm text-gray-300"
+    >
+      © 2026
+      <span class="font-bold">
+        <span
+          class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+          >Six</span
+        ><span class="text-white">Storm</span>
+      </span>
+
+      • Developed by Naveen Rathore
+
+      <br /><br />
+
+      <a href="/legal" class="hover:text-red-400">Disclaimer</a> |
+      <a href="/privacy" class="hover:text-red-400">Privacy</a> |
+      <a href="/terms" class="hover:text-red-400">Terms</a>
+    </footer>
+
+    <!-- Mobile Toggle Script -->
+    <script>
+      const btn = document.getElementById("menuBtn");
+      const menu = document.getElementById("mobileMenu");
+
+      btn.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
+    </script>
+  </body>
+</html>

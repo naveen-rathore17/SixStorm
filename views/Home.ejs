@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SixStorm-live</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="SixStorm provides live cricket streaming access, match updates, and sports coverage from publicly available sources."
+    />
+
+    <meta
+      name="keywords"
+      content="cricket live, cricket streaming, live cricket match, IPL live, cricket watch online"
+    />
+
+    <meta name="author" content="Naveen Rathore" />
+
+    <meta property="og:title" content="SixStorm Live Cricket Streaming" />
+
+    <meta
+      property="og:description"
+      content="Watch live cricket matches and stay updated with match coverage."
+    />
+
+    <meta property="og:type" content="website" />
+
+    <meta property="og:url" content="https://yourdomain.com" />
+
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/images/logo.png"
+    />
+
+    <meta name="robots" content="index, follow" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#111827] min-h-screen flex flex-col text-white"
+  >
+    <!-- NAVBAR -->
+
+    <nav
+      class="bg-[#020617]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-xl"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <a href="/" class="text-2xl md:text-3xl font-bold">
+          <span
+            class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+            >Six</span
+          ><span class="text-white">Storm</span>
+        </a>
+
+        <div class="hidden md:flex gap-6 text-sm md:text-base font-semibold">
+          <a href="/" class="hover:text-red-400 transition">Home</a>
+          <a href="/help" class="hover:text-red-400 transition">Help</a>
+          <a href="/legal" class="hover:text-red-400 transition">Disclaimer</a>
+          <a href="/privacy-policy" class="hover:text-red-400 transition"
+            >Privacy-Policy</a
+          >
+          <a href="/contact-us" class="hover:text-red-400 transition"
+            >Contact</a
+          >
+        </div>
+
+        <button
+          onclick="toggleMenu()"
+          class="md:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-white/10 hover:bg-red-500 backdrop-blur-lg shadow-lg transition"
+        >
+          <span class="text-xl">☰</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MOBILE MENU -->
+
+    <div
+      id="mobileMenu"
+      class="fixed top-0 right-[-270px] w-[260px] bg-[#020617]/95 backdrop-blur-2xl shadow-2xl rounded-l-3xl transition-all duration-300 z-50 border-l border-white/10"
+    >
+      <div
+        class="p-6 flex flex-col gap-6 text-lg font-semibold items-center text-center"
+      >
+        <a href="/" class="text-2xl md:text-3xl font-bold">
+          <span
+            class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+            >Six</span
+          ><span class="text-white">Storm</span>
+        </a>
+
+        <a href="/" class="hover:text-red-400 transition">Home</a>
+        <a href="/help" class="hover:text-red-400 transition">Help</a>
+        <a href="/legal" class="hover:text-red-400 transition">Disclaimer</a>
+        <a href="/privacy-policy" class="hover:text-red-400 transition"
+          >Privacy-Policy</a
+        >
+        <a href="/contact-us" class="hover:text-red-400 transition">Contact</a>
+
+        <button
+          onclick="toggleMenu()"
+          class="mt-4 w-full py-3 rounded-xl bg-red-600 hover:bg-red-700 font-bold shadow-lg"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+
+    <div class="flex-grow max-w-7xl mx-auto px-4 py-8 space-y-10">
+      <!-- SLIDER -->
+
+      <div
+        class="relative w-full max-w-6xl mx-auto aspect-video overflow-hidden rounded-3xl shadow-2xl border border-white/20"
+      >
+        <img
+          id="slider"
+          class="w-full h-full object-cover transition duration-700"
+        />
+
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
+        ></div>
+
+        <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 max-w-xl">
+          <h2
+            id="slideTitle"
+            class="text-xl md:text-3xl font-bold text-white"
+          ></h2>
+
+          <p id="slideDesc" class="text-sm md:text-lg text-gray-300 mt-2"></p>
+        </div>
+
+        <div
+          id="dots"
+          class="absolute bottom-4 w-full flex justify-center gap-3"
+        ></div>
+      </div>
+
+      <!-- PAGE HEADING -->
+
+      <div class="text-center space-y-4">
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-wide">
+          <span class="text-yellow-400">CRICKET</span>
+          <span class="text-white">HUB</span>
+        </h1>
+
+        <h2 class="text-lg md:text-2xl text-gray-300 font-semibold">
+          IPL • ICC T20 World Cup • Match Updates & Viewing Access
+        </h2>
+      </div>
+
+      <!-- MATCH CARD 3 -->
+      <div class="flex justify-center mt-6">
+        <div
+          class="w-full max-w-md bg-gradient-to-br from-[#1e293b] via-[#020617] to-[#111827] p-[2px] rounded-3xl shadow-2xl"
+        >
+          <div
+            class="bg-[#020617] rounded-3xl p-6 text-center space-y-6 border border-white/10"
+          >
+            <!-- UPCOMING TEXT -->
+            <p class="text-red-400 font-semibold animate-pulse">
+              🔴 Upcoming Live Match
+            </p>
+
+            <!-- TITLE -->
+            <h2
+              class="text-xl md:text-2xl font-bold text-yellow-400 tracking-wide"
+            >
+              IPL 2026 Match-5
+            </h2>
+
+            <!-- TEAMS -->
+            <div class="flex justify-center items-center gap-8">
+              <!-- TEAM 1 -->
+              <div class="flex flex-col items-center gap-2">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/en/thumb/3/34/Lucknow_Super_Giants_Logo.svg/250px-Lucknow_Super_Giants_Logo.svg.png"
+                  class="w-16 h-16 object-contain"
+                />
+                <span class="text-lg font-bold">LSG</span>
+              </div>
+
+              <!-- VS BADGE -->
+              <div
+                class="px-4 py-2 rounded-full bg-red-600 text-white font-bold shadow-lg"
+              >
+                VS
+              </div>
+
+              <!-- TEAM 2 -->
+              <div class="flex flex-col items-center gap-2">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/en/thumb/2/2f/Delhi_Capitals.svg/250px-Delhi_Capitals.svg.png"
+                  class="w-16 h-16 object-contain"
+                />
+                <span class="text-lg font-bold">DC</span>
+              </div>
+            </div>
+
+            <!-- MATCH DETAILS -->
+            <div class="text-gray-300 text-sm leading-relaxed">
+              📅 <span class="text-white font-semibold">1 April 2026</span>
+              <br />
+              🏟
+              <span class="text-white font-semibold"
+                >Ekana Cricket Stadium B Ground</span
+              >
+            </div>
+
+            <!-- COUNTDOWN -->
+            <div
+              id="countdown1"
+              class="text-3xl font-mono text-yellow-400 bg-black/50 py-3 rounded-lg border border-yellow-400/20"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- IPL ANNOUNCEMENT -->
+
+      <div class="flex justify-center px-2">
+        <div
+          class="w-full max-w-2xl bg-gradient-to-r from-[#1e293b]/80 via-[#020617] to-[#111827]/80 border border-white/10 rounded-3xl shadow-2xl overflow-hidden backdrop-blur-xl"
+        >
+          <!-- IMAGE -->
+
+          <img
+            src="https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/8736/1772978088736-i"
+            class="w-full h-40 sm:h-48 md:h-56 object-cover object-top"
+          />
+
+          <!-- TEXT -->
+
+          <div class="p-4 sm:p-6 text-center space-y-3 sm:space-y-4">
+            <h2
+              class="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-400"
+            >
+              🏏 IPL 2026 Live Updates
+            </h2>
+
+            <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+              The
+              <span class="text-white font-semibold"
+                >Indian Premier League (IPL) 2026</span
+              >
+              is currently underway, starting from
+              <span class="text-red-400 font-bold">28 March 2026</span>.
+
+              <span class="text-white font-semibold">CricPulse</span> is a
+              cricket fan platform created to provide information related to
+              ongoing tournaments including match schedules, team details, and
+              live match updates. During match time, users may find match
+              related updates and available viewing sources so fans can stay
+              connected with the excitement of
+              <span class="text-yellow-400 font-semibold">IPL 2026</span>. Our
+              goal is to help cricket fans follow their favorite teams and enjoy
+              the tournament experience online.
+            </p>
+
+            <p
+              class="text-red-400 font-semibold animate-pulse text-sm sm:text-base"
+            >
+              🔴 IPL 2026 Matches & Updates Available During Match Time
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- BUTTONS -->
+
+      <div class="flex flex-col items-center gap-6">
+        <a href="/star_sport_1_live_HD_ipl">
+          <button
+            class="w-[295px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-[#0047AB] via-[#1E90FF] to-[#00BFFF] hover:scale-110 transition duration-300 shadow-xl"
+            style="text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.8)"
+          >
+            ▶ Watch Live
+          </button>
+        </a>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+
+    <footer
+      class="bg-[#020617]/80 border-t border-white/10 text-center py-5 text-sm text-gray-300"
+    >
+      © 2026
+      <span class="font-bold">
+        <span
+          class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+          >Six</span
+        ><span class="text-white">Storm</span>
+      </span>
+
+      • Developed by Naveen Rathore
+    </footer>
+
+    <script>
+      const slides = [
+        {
+          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/7439/1774989997439-i",
+          title: "DC vs LSG",
+          desc: "Delhi Capital Face Lucknow in the TATA IPL 2026",
+        },
+
+        {
+          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/5753/1774882555753-i",
+          title: "TATA IPL 2026 ",
+          desc: "Watch the Biggest Cricket League – IPL ",
+        },
+        {
+          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/6372/1774719566372-i",
+          title: "RCB Ready for Second Title",
+          desc: "Can the king’s soldiers lift another IPL trophy this season?",
+        },
+        {
+          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/3980/1767461013980-i",
+          title: "CSK Eye for 6th Title",
+          desc: "CSK's new era will be able to win its 6th trophy",
+        },
+        {
+          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/1535/1774804471535-i",
+          title: "Mumbai Chase the highest Score!",
+          desc: "Pandya's Paltan!",
+        },
+        {
+          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2526/1772995532526-i",
+          title: "India Winning Moment",
+          desc: "Team India Lifts Their Third T20 World Cup Trophy!",
+        },
+      ];
+
+      let index = 0;
+
+      const slider = document.getElementById("slider");
+      const title = document.getElementById("slideTitle");
+      const desc = document.getElementById("slideDesc");
+
+      const dots = document.getElementById("dots");
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement("div");
+
+        dot.className =
+          "w-3 h-3 bg-white/40 rounded-full cursor-pointer hover:bg-white";
+
+        dot.onclick = () => {
+          index = i;
+          showSlide();
+        };
+
+        dots.appendChild(dot);
+      });
+
+      function showSlide() {
+        slider.src = slides[index].img;
+        title.innerText = slides[index].title;
+        desc.innerText = slides[index].desc;
+
+        document.querySelectorAll("#dots div").forEach((dot, i) => {
+          dot.classList.remove("bg-white");
+          if (i === index) dot.classList.add("bg-white");
+        });
+      }
+      function nextSlide() {
+        index = (index + 1) % slides.length;
+        showSlide();
+      }
+
+      setInterval(nextSlide, 4000);
+
+      showSlide();
+
+      function toggleMenu() {
+        let menu = document.getElementById("mobileMenu");
+
+        if (menu.style.right === "0px") {
+          menu.style.right = "-260px";
+        } else {
+          menu.style.right = "0px";
+        }
+      }
+
+      // MATCH COUNTDOWN
+
+      const matchDate = new Date("April 1, 2026 19:30:00").getTime();
+
+      const countdown = setInterval(function () {
+        const now = new Date().getTime();
+
+        const distance = matchDate - now;
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+        );
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown1").innerHTML =
+          days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+
+        if (distance < 0) {
+          clearInterval(countdown);
+
+          document.getElementById("countdown1").innerHTML = `
+          <div class="flex justify-center ">
+        <span class="bg-red-600 px-5 py-1 rounded-full text-xs sm:text-sm font-bold animate-pulse">
+          LIVE
+        </span>
+      </div>
+          `;
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
