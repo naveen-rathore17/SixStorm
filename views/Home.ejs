@@ -197,6 +197,16 @@
             ▶ Watch Live
           </button>
         </a>
+
+        <button id="installBtn"
+          class="flex items-center justify-center gap-3 w-[260px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:scale-110 transition duration-300 shadow-xl"
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/724/724933.png"
+            class="w-6 h-6"
+          />
+          Download APP
+        </button>
       </div>
     </div>
 
@@ -348,5 +358,23 @@
           });
       }
     </script>
+
+    <script>
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.classList.remove("hidden");
+});
+
+installBtn.addEventListener("click", async () => {
+  installBtn.classList.add("hidden");
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+});
+</script>
   </body>
 </html>
