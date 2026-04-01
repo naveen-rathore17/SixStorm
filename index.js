@@ -57,7 +57,9 @@ app.get("/star_sport_1_live_HD_ipl", (req, res) => {
     stream: process.env.url
   })
 });
-
+app.get("/ping", (req, res) => {
+  res.send("Server is alive 🚀");
+});
 
 
 const port = process.env.PORT || 3000;
