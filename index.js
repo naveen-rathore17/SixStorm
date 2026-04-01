@@ -10,9 +10,13 @@ const helmet = require("helmet")
 
 
 app.set("view engine", "ejs");
+app.set("trust proxy", 1);
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(helmet())
+app.use(require("helmet")({
+contentSecurityPolicy: false
+}));
 
 app.use(
   helmet.contentSecurityPolicy({
