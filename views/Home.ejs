@@ -198,7 +198,8 @@
           </button>
         </a>
 
-        <button id="installBtn"
+        <button
+          id="installBtn"
           class="flex items-center justify-center gap-3 w-[260px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:scale-110 transition duration-300 shadow-xl"
         >
           <img
@@ -360,21 +361,31 @@
     </script>
 
     <script>
-let deferredPrompt;
-const installBtn = document.getElementById("installBtn");
+      let deferredPrompt;
+      const installBtn = document.getElementById("installBtn");
 
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.classList.remove("hidden");
-});
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.classList.remove("hidden");
+      });
 
-installBtn.addEventListener("click", async () => {
-  installBtn.classList.add("hidden");
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-});
-</script>
+      installBtn.addEventListener("click", async () => {
+        installBtn.classList.add("hidden");
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+      });
+    </script>
+    <script>
+      if (
+        "serviceWorker" in navigator &&
+        window.location.hostname !== "localhost"
+      ) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("/service-worker.js");
+        });
+      }
+    </script>
   </body>
 </html>
