@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const axios= require('axios')
+const axios = require('axios')
 
 // Disable ETag
 app.set("etag", false);
@@ -139,7 +139,15 @@ app.get("/", async (req, res) => {
               seriesName: match.matchInfo.seriesName,
               matchDesc: match.matchInfo.matchDesc,
 
-              date: new Date(parseInt(match.matchInfo.startDate)).toLocaleString(),
+              date: new Date(parseInt(match.matchInfo.startDate)).toLocaleString("en-IN", {
+                timeZone: "Asia/Kolkata",
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: true
+              }),
               startDate: parseInt(match.matchInfo.startDate)
             });
 
