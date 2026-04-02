@@ -16,12 +16,20 @@ const limiter = rateLimit({
 
 app.set("view engine", "ejs");
 app.set("trust proxy", 1);
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"), {
+  etag: false,
+  lastModified: false,
+  maxAge: 0
+}));
+app.use((req, res, next) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  next();
+});
 
 app.use(helmet())
 app.use(limiter)
 app.use(require("helmet")({
-contentSecurityPolicy: false
+  contentSecurityPolicy: false
 }));
 
 app.use(
@@ -35,12 +43,14 @@ app.use(
     }
   })
 )
-app.use((req,res,next)=>{
-  res.setHeader("X-Content-Type-Options","nosniff")
-  res.setHeader("X-Frame-Options","DENY")
-  res.setHeader("X-XSS-Protection","1; mode=block")
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff")
+  res.setHeader("X-Frame-Options", "DENY")
+  res.setHeader("X-XSS-Protection", "1; mode=block")
   next()
 })
+
+
 
 
 // Routes
