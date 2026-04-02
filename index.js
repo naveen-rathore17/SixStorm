@@ -73,8 +73,9 @@ app.use(
 );
 
 // Routes
+
 app.get("/", (req, res) => {
-  res.render("Home");
+  res.redirect("https://sixstorm-live.onrender.com");
 });
 
 app.get("/help", (req, res) => {
