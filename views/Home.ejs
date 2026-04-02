@@ -2,10 +2,6 @@
 <html>
   <head>
     <title>SixStorm-live</title>
-    <!-- For app -->
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="apple-touch-icon" href="/images/icon-192.png" />
 
     <link rel="icon" type="image/png" href="/images/favicon.png" />
 
@@ -197,17 +193,6 @@
             ▶ Watch Live
           </button>
         </a>
-
-        <button
-          id="installBtn"
-          class="flex items-center justify-center gap-3 w-[260px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 hover:scale-110 transition duration-300 shadow-xl"
-        >
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/724/724933.png"
-            class="w-6 h-6"
-          />
-          Download APP
-        </button>
       </div>
     </div>
 
@@ -348,44 +333,6 @@
           `;
         }
       }, 1000);
-    </script>
-    <!-- For app script -->
-    <script>
-      if ("serviceWorker" in navigator) {
-        navigator.serviceWorker
-          .register("/service-worker.js")
-          .then(function () {
-            console.log("Service Worker Registered");
-          });
-      }
-    </script>
-
-    <script>
-      let deferredPrompt;
-      const installBtn = document.getElementById("installBtn");
-
-      window.addEventListener("beforeinstallprompt", (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        installBtn.classList.remove("hidden");
-      });
-
-      installBtn.addEventListener("click", async () => {
-        installBtn.classList.add("hidden");
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-      });
-    </script>
-    <script>
-      if (
-        "serviceWorker" in navigator &&
-        window.location.hostname !== "localhost"
-      ) {
-        window.addEventListener("load", () => {
-          navigator.serviceWorker.register("/service-worker.js");
-        });
-      }
     </script>
   </body>
 </html>

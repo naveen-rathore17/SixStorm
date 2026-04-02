@@ -5,21 +5,19 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
-const { Server } = require("socket.io");
-const io = new Server(server);
 const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 
-// Disable ETag (important for cache issue)
+// Disable ETag
 app.set("etag", false);
 
 // View engine
 app.set("view engine", "ejs");
 app.set("trust proxy", 1);
-app.set("etag", false);
 app.set("view cache", false);
 
+// Live reload (development)
 const liveReloadServer = livereload.createServer();
 liveReloadServer.watch(path.join(__dirname, "public"));
 liveReloadServer.watch(path.join(__dirname, "views"));
@@ -32,7 +30,7 @@ const limiter = rateLimit({
   max: 100
 });
 
-// Security middleware
+// Security
 app.use(
   helmet({
     contentSecurityPolicy: false
@@ -57,7 +55,6 @@ app.use(
   })
 );
 
-// Rate limit
 app.use(limiter);
 
 // Disable caching
@@ -74,14 +71,6 @@ app.use(
     maxAge: 0
   })
 );
-
-// Extra security headers
-app.use((req, res, next) => {
-  res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
-  res.setHeader("X-XSS-Protection", "1; mode=block");
-  next();
-});
 
 // Routes
 app.get("/", (req, res) => {
@@ -110,7 +99,7 @@ app.get("/star_sport_1_live_HD_ipl", (req, res) => {
   });
 });
 
-// Ping route (for uptime monitor)
+// Ping route
 app.get("/ping", (req, res) => {
   res.send("Server is alive 🚀");
 });
