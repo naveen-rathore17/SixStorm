@@ -123,66 +123,71 @@
 
       <!-- MATCH CARD -->
 
-      <div class="flex justify-center mt-6">
+        <% matches.forEach(match => { %>
+
+<div class="flex justify-center mt-6">
+  <div
+    class="w-full max-w-md bg-gradient-to-br from-[#1e293b] via-[#020617] to-[#111827] p-[2px] rounded-3xl shadow-2xl"
+  >
+    <div
+      class="bg-[#020617] rounded-3xl p-6 text-center space-y-6 border border-white/10"
+    >
+      <p class="text-red-400 font-semibold animate-pulse">
+        🔴 Upcoming Live Match
+      </p>
+
+      <h2
+        class="text-xl md:text-2xl font-bold text-yellow-400 tracking-wide"
+      >
+        IPL - <%= match.matchDesc %>
+      </h2>
+
+      <div class="flex justify-center items-center gap-8">
+        <div class="flex flex-col items-center gap-2">
+          <img
+            src="<%= match.team1Img %>"
+            class="w-14 h-14 object-contain"
+          />
+
+          <span class="text-lg font-bold"><%= match.team1 %></span>
+        </div>
+
         <div
-          class="w-full max-w-md bg-gradient-to-br from-[#1e293b] via-[#020617] to-[#111827] p-[2px] rounded-3xl shadow-2xl"
+          class="px-4 py-2 rounded-full bg-red-600 text-white font-bold shadow-lg"
         >
-          <div
-            class="bg-[#020617] rounded-3xl p-6 text-center space-y-6 border border-white/10"
-          >
-            <p class="text-red-400 font-semibold animate-pulse">
-              🔴 Upcoming Live Match
-            </p>
+          VS
+        </div>
 
-            <h2
-              class="text-xl md:text-2xl font-bold text-yellow-400 tracking-wide"
-            >
-              IPL 2026 Match-6
-            </h2>
+        <div class="flex flex-col items-center gap-2">
+          <img
+            src="<%= match.team2Img %>"
+            class="w-14 h-14 object-contain"
+          />
 
-            <div class="flex justify-center items-center gap-8">
-              <div class="flex flex-col items-center gap-2">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4c/Kolkata_Knight_Riders_Logo.svg/250px-Kolkata_Knight_Riders_Logo.svg.png"
-                  class="w-14 h-14 object-contain"
-                />
-
-                <span class="text-lg font-bold">KKR</span>
-              </div>
-
-              <div
-                class="px-4 py-2 rounded-full bg-red-600 text-white font-bold shadow-lg"
-              >
-                VS
-              </div>
-
-              <div class="flex flex-col items-center gap-2">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/en/thumb/5/51/Sunrisers_Hyderabad_Logo.svg/250px-Sunrisers_Hyderabad_Logo.svg.png"
-                  class="w-14 h-14 object-contain"
-                />
-
-                <span class="text-lg font-bold">SRH</span>
-              </div>
-            </div>
-
-            <div class="text-gray-300 text-sm leading-relaxed">
-              📅 <span class="text-white font-semibold">2 April 2026</span>
-              <br />
-
-              🏟
-              <span class="text-white font-semibold"
-                >Eden Gardens, Kolkata</span
-              >
-            </div>
-
-            <div
-              id="countdown1"
-              class="text-2xl font-mono text-yellow-400 bg-black/50 py-3 rounded-lg border border-yellow-400/20"
-            ></div>
-          </div>
+          <span class="text-lg font-bold"><%= match.team2 %></span>
         </div>
       </div>
+
+      <div class="text-gray-300 text-sm leading-relaxed">
+        📅 <span class="text-white font-semibold"><%= match.date %></span>
+        <br />
+
+        🏟
+        <span class="text-white font-semibold">
+          <%= match.venue %>, <%= match.city %>
+        </span>
+      </div>
+
+  <div
+  class="countdown text-2xl font-mono text-yellow-400 bg-black/50 py-3 rounded-lg border border-yellow-400/20"
+  data-start="<%= match.startDate %>"
+>
+</div>
+    </div>
+  </div>
+</div>
+
+<% }) %>
 
       <!-- WATCH BUTTON -->
 
@@ -305,36 +310,35 @@
       }
 
       // MATCH COUNTDOWN
+const countdowns = document.querySelectorAll(".countdown");
 
-      const matchDate = new Date("April 2, 2026 19:30:00").getTime();
+countdowns.forEach((box) => {
+  const startTime = Number(box.dataset.start);
 
-      const countdown = setInterval(function () {
-        const now = new Date().getTime();
+  const timer = setInterval(() => {
+    const now = new Date().getTime();
+    const distance = startTime - now;
 
-        const distance = matchDate - now;
+    if (distance <= 0) {
+      clearInterval(timer);
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("countdown1").innerHTML =
-          days + "d " + hours + "h " + minutes + "m " + seconds + "s";
-
-        if (distance < 0) {
-          clearInterval(countdown);
-
-          document.getElementById("countdown1").innerHTML = `
-          <div class="flex justify-center ">
-        <span class="bg-red-600 px-5 py-1 rounded-full text-xs sm:text-sm font-bold animate-pulse">
-          LIVE
+      box.innerHTML = `
+      <div class="flex justify-center">
+        <span class="bg-red-600 px-5 py-1 rounded-full text-sm font-bold animate-pulse">
+          🔴 LIVE
         </span>
-      </div>
-          `;
-        }
-      }, 1000);
+      </div>`;
+      return;
+    }
+
+    const hours = Math.floor(distance / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    box.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+  }, 1000);
+});
+     
     </script>
   </body>
 </html>
