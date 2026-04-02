@@ -1,5 +1,3 @@
-const livereload = require("livereload");
-const connectLiveReload = require("connect-livereload");
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -9,6 +7,8 @@ const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const axios = require('axios')
+const keepAlive = require("./keepAlive");
+keepAlive();
 
 // Disable ETag
 app.set("etag", false);
@@ -95,8 +95,16 @@ app.get("/star_sport_1_live_HD_ipl", (req, res) => {
 
 // Ping route
 app.get("/ping", (req, res) => {
-  res.send("Server is alive 🚀");
+  res.status(200).send("Server is alive");
 });
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    uptime: process.uptime(),
+    message: "Server running"
+  });
+});
+
 
 // match api data
 app.get("/", async (req, res) => {
