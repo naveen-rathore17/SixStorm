@@ -75,7 +75,7 @@ app.use(
 // Routes
 
 app.get("/", (req, res) => {
-  res.render("/Home")
+  res.render("Home")
 });
 
 app.get("/help", (req, res) => {
