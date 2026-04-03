@@ -107,74 +107,143 @@ app.get("/health", (req, res) => {
 
 
 // match api data
+// app.get("/", async (req, res) => {
+
+//   const options = {
+//     method: 'GET',
+//     url: 'https://cricbuzz-cricket.p.rapidapi.com/matches/v1/upcoming',
+//     headers: {
+//       'x-rapidapi-key': process.env.CricApi,
+//       'x-rapidapi-host': 'cricbuzz-cricket.p.rapidapi.com'
+//     }
+//   };
+
+//   try {
+
+//     const response = await axios.request(options);
+
+//     const data = response.data.typeMatches;
+
+//     let matches = [];
+
+//     data.forEach(type => {
+
+//       type.seriesMatches?.forEach(series => {
+
+//         if (series.seriesAdWrapper?.seriesName === "Indian Premier League 2026") {
+
+//           series.seriesAdWrapper.matches.forEach(match => {
+
+//             matches.push({
+//               team1: match.matchInfo.team1.teamSName,
+//               team2: match.matchInfo.team2.teamSName,
+
+//               team1Img: `https://static.cricbuzz.com/a/img/v1/75x75/i1/c${match.matchInfo.team1.imageId}/team.jpg`,
+//               team2Img: `https://static.cricbuzz.com/a/img/v1/75x75/i1/c${match.matchInfo.team2.imageId}/team.jpg`,
+
+//               venue: match.matchInfo.venueInfo.ground,
+//               city: match.matchInfo.venueInfo.city,
+
+//               seriesName: match.matchInfo.seriesName,
+//               matchDesc: match.matchInfo.matchDesc,
+
+//               date: new Date(parseInt(match.matchInfo.startDate)).toLocaleString("en-IN", {
+//                 timeZone: "Asia/Kolkata",
+//                 day: "2-digit",
+//                 month: "short",
+//                 year: "numeric",
+//                 hour: "2-digit",
+//                 minute: "2-digit",
+//                 hour12: true
+//               }),
+//               startDate: parseInt(match.matchInfo.startDate)
+//             });
+
+//           });
+
+//         }
+
+//       });
+
+//     });
+
+//     res.render("Home", { matches });
+
+//   } catch (error) {
+
+//     console.log("API Error:", error.message);
+
+//     // fallback render
+//     res.render("Home", { matches: [] });
+
+//   }
+
+// });
+
+
+
 app.get("/", async (req, res) => {
-
-  const options = {
-    method: 'GET',
-    url: 'https://cricbuzz-cricket.p.rapidapi.com/matches/v1/upcoming',
-    headers: {
-      'x-rapidapi-key': process.env.CricApi,
-      'x-rapidapi-host': 'cricbuzz-cricket.p.rapidapi.com'
-    }
-  };
-
   try {
 
-    const response = await axios.request(options);
+    const response = await axios.get(
+      `https://api.cricapi.com/v1/series_info?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
+    );
 
-    const data = response.data.typeMatches;
+    const matchList = response.data.data.matchList;
+
+    const now = new Date();
 
     let matches = [];
 
-    data.forEach(type => {
+    matchList.forEach(match => {
 
-      type.seriesMatches?.forEach(series => {
+      const matchTime = new Date(match.dateTimeGMT + "Z");
+      const matchNumber = match.name.match(/\d+/)?.[0] || "";
 
-        if (series.seriesAdWrapper?.seriesName === "Indian Premier League 2026") {
+      // only future match
+      if (matchTime > now && !match.matchStarted) {
 
-          series.seriesAdWrapper.matches.forEach(match => {
+        matches.push({
+          team1: match.teamInfo[0].shortname,
+          team2: match.teamInfo[1].shortname,
 
-            matches.push({
-              team1: match.matchInfo.team1.teamSName,
-              team2: match.matchInfo.team2.teamSName,
+          team1Img: match.teamInfo[0].img,
+          team2Img: match.teamInfo[1].img,
 
-              team1Img: `https://static.cricbuzz.com/a/img/v1/75x75/i1/c${match.matchInfo.team1.imageId}/team.jpg`,
-              team2Img: `https://static.cricbuzz.com/a/img/v1/75x75/i1/c${match.matchInfo.team2.imageId}/team.jpg`,
+          venue: match.venue,
+          city: "",
 
-              venue: match.matchInfo.venueInfo.ground,
-              city: match.matchInfo.venueInfo.city,
+          matchDesc: `Match-${matchNumber}`,
 
-              seriesName: match.matchInfo.seriesName,
-              matchDesc: match.matchInfo.matchDesc,
+          date: matchTime.toLocaleString("en-IN", {
+            timeZone: "Asia/Kolkata",
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+          }),
+          startDate: matchTime.getTime()
+        });
 
-              date: new Date(parseInt(match.matchInfo.startDate)).toLocaleString("en-IN", {
-                timeZone: "Asia/Kolkata",
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true
-              }),
-              startDate: parseInt(match.matchInfo.startDate)
-            });
-
-          });
-
-        }
-
-      });
+      }
 
     });
 
-    res.render("Home", { matches });
+    // nearest upcoming match
+    matches.sort((a, b) => a.startDate - b.startDate);
+
+    res.render("Home", { matches: [matches[0]] });
 
   } catch (error) {
+
     console.log(error);
+
+    res.render("Home", { matches: [] });
+
   }
-
 });
-
 // Server start
 const port = process.env.PORT || 3000;
 
