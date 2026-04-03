@@ -1,3 +1,6 @@
+let cachedMatches = null;
+let lastFetchTime = 0;
+const CACHE_DURATION = 60000; // 1 minute
 require("dotenv").config();
 const express = require("express");
 const app = express();
@@ -185,12 +188,21 @@ app.get("/health", (req, res) => {
 app.get("/", async (req, res) => {
   try {
 
+    const nowTime = Date.now();
+
+    // Agar cache valid hai to API call nahi hogi
+    if (cachedMatches && (nowTime - lastFetchTime < CACHE_DURATION)) {
+      console.log("Serving from CACHE");
+      return res.render("Home", { matches: cachedMatches });
+    }
+
+    console.log("Fetching from API");
+
     const response = await axios.get(
       `https://api.cricapi.com/v1/series_info?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
     );
 
     const matchList = response.data.data.matchList;
-
     const now = new Date();
 
     let matches = [];
@@ -234,11 +246,22 @@ app.get("/", async (req, res) => {
     // nearest upcoming match
     matches.sort((a, b) => a.startDate - b.startDate);
 
-    res.render("Home", { matches: [matches[0]] });
+    const finalMatch = [matches[0]];
+
+    // cache save
+    cachedMatches = finalMatch;
+    lastFetchTime = nowTime;
+
+    res.render("Home", { matches: finalMatch });
 
   } catch (error) {
 
     console.log(error);
+
+    // agar error aaye aur cache ho to wahi dikhao
+    if (cachedMatches) {
+      return res.render("Home", { matches: cachedMatches });
+    }
 
     res.render("Home", { matches: [] });
 
