@@ -110,6 +110,14 @@ app.get("/privacy-policy", (req, res) => res.render("privacy", {
 app.get("/contact-us", (req, res) => res.render("Contact", {
   title: "Contact-us | SixStorm"
 }));
+app.get("/about-us", (req, res) => res.render("about", {
+  title: "About-us | SixStorm"
+}));
+app.get("/cricket-news", (req,res)=>{
+res.render("news",{
+  title:"Cricket-News | SixStorm"
+})
+})
 
 app.get("/star_sport_1_live_HD_ipl", (req, res) => {
   res.render("sport-1", {
