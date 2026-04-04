@@ -1,7 +1,5 @@
-let cachedMatches = null;
-let lastFetchTime = 0;
-const CACHE_DURATION = 60000; // 1 minute
 require("dotenv").config();
+
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -9,34 +7,49 @@ const server = http.createServer(app);
 const path = require("path");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const axios = require('axios')
+const axios = require("axios");
+
 const keepAlive = require("./keepAlive");
 keepAlive();
 
-// Disable ETag
-app.set("etag", false);
 
-// View engine
+// =========================
+// CACHE SYSTEM
+// =========================
+
+let cachedMatches = null;
+let lastFetchTime = 0;
+
+const CACHE_DURATION = 600000; // 10 minutes
+
+
+// =========================
+// SERVER SETTINGS
+// =========================
+
+app.set("etag", false);
 app.set("view engine", "ejs");
 app.set("trust proxy", 1);
 app.set("view cache", false);
 
 
+// =========================
+// SECURITY
+// =========================
 
-// Rate limit
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100
 });
 
-// Security
+app.use(limiter);
+
 app.use(
   helmet({
     contentSecurityPolicy: false
   })
 );
 
-// Custom CSP
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -45,8 +58,7 @@ app.use(
       scriptSrc: [
         "'self'",
         "'unsafe-inline'",
-        "https://cdn.tailwindcss.com",
-        "http://localhost:35730"
+        "https://cdn.tailwindcss.com"
       ],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"]
@@ -54,15 +66,24 @@ app.use(
   })
 );
 
-app.use(limiter);
 
-// Disable caching
+// =========================
+// DISABLE CACHE
+// =========================
+
 app.use((req, res, next) => {
-  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, private");
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, private"
+  );
   next();
 });
 
-// Static files
+
+// =========================
+// STATIC FILES
+// =========================
+
 app.use(
   express.static(path.join(__dirname, "public"), {
     etag: false,
@@ -71,24 +92,15 @@ app.use(
   })
 );
 
-// Routes
 
+// =========================
+// ROUTES
+// =========================
 
-app.get("/help", (req, res) => {
-  res.render("help");
-});
-
-app.get("/legal", (req, res) => {
-  res.render("info");
-});
-
-app.get("/privacy-policy", (req, res) => {
-  res.render("privacy");
-});
-
-app.get("/contact-us", (req, res) => {
-  res.render("Contact");
-});
+app.get("/help", (req, res) => res.render("help"));
+app.get("/legal", (req, res) => res.render("info"));
+app.get("/privacy-policy", (req, res) => res.render("privacy"));
+app.get("/contact-us", (req, res) => res.render("Contact"));
 
 app.get("/star_sport_1_live_HD_ipl", (req, res) => {
   res.render("sport-1", {
@@ -96,10 +108,15 @@ app.get("/star_sport_1_live_HD_ipl", (req, res) => {
   });
 });
 
-// Ping route
+
+// =========================
+// HEALTH CHECK
+// =========================
+
 app.get("/ping", (req, res) => {
   res.status(200).send("Server is alive");
 });
+
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "OK",
@@ -109,92 +126,13 @@ app.get("/health", (req, res) => {
 });
 
 
-// match api data
-// app.get("/", async (req, res) => {
+// =========================
+// FETCH MATCH FROM API
+// =========================
 
-//   const options = {
-//     method: 'GET',
-//     url: 'https://cricbuzz-cricket.p.rapidapi.com/matches/v1/upcoming',
-//     headers: {
-//       'x-rapidapi-key': process.env.CricApi,
-//       'x-rapidapi-host': 'cricbuzz-cricket.p.rapidapi.com'
-//     }
-//   };
+async function fetchMatches() {
 
-//   try {
-
-//     const response = await axios.request(options);
-
-//     const data = response.data.typeMatches;
-
-//     let matches = [];
-
-//     data.forEach(type => {
-
-//       type.seriesMatches?.forEach(series => {
-
-//         if (series.seriesAdWrapper?.seriesName === "Indian Premier League 2026") {
-
-//           series.seriesAdWrapper.matches.forEach(match => {
-
-//             matches.push({
-//               team1: match.matchInfo.team1.teamSName,
-//               team2: match.matchInfo.team2.teamSName,
-
-//               team1Img: `https://static.cricbuzz.com/a/img/v1/75x75/i1/c${match.matchInfo.team1.imageId}/team.jpg`,
-//               team2Img: `https://static.cricbuzz.com/a/img/v1/75x75/i1/c${match.matchInfo.team2.imageId}/team.jpg`,
-
-//               venue: match.matchInfo.venueInfo.ground,
-//               city: match.matchInfo.venueInfo.city,
-
-//               seriesName: match.matchInfo.seriesName,
-//               matchDesc: match.matchInfo.matchDesc,
-
-//               date: new Date(parseInt(match.matchInfo.startDate)).toLocaleString("en-IN", {
-//                 timeZone: "Asia/Kolkata",
-//                 day: "2-digit",
-//                 month: "short",
-//                 year: "numeric",
-//                 hour: "2-digit",
-//                 minute: "2-digit",
-//                 hour12: true
-//               }),
-//               startDate: parseInt(match.matchInfo.startDate)
-//             });
-
-//           });
-
-//         }
-
-//       });
-
-//     });
-
-//     res.render("Home", { matches });
-
-//   } catch (error) {
-
-//     console.log("API Error:", error.message);
-
-//     // fallback render
-//     res.render("Home", { matches: [] });
-
-//   }
-
-// });
-
-
-
-app.get("/", async (req, res) => {
   try {
-
-    const nowTime = Date.now();
-
-    // Agar cache valid hai to API call nahi hogi
-    if (cachedMatches && (nowTime - lastFetchTime < CACHE_DURATION)) {
-      console.log("Serving from CACHE");
-      return res.render("Home", { matches: cachedMatches });
-    }
 
     console.log("Fetching from API");
 
@@ -202,7 +140,17 @@ app.get("/", async (req, res) => {
       `https://api.cricapi.com/v1/series_info?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
     );
 
-    const matchList = response.data.data.matchList;
+    const data = response.data;
+
+    if (data.status !== "success") {
+
+      console.log("API ERROR:", data.reason);
+      return null;
+
+    }
+
+    const matchList = data?.data?.matchList || [];
+
     const now = new Date();
 
     let matches = [];
@@ -210,20 +158,20 @@ app.get("/", async (req, res) => {
     matchList.forEach(match => {
 
       const matchTime = new Date(match.dateTimeGMT + "Z");
+
       const matchNumber = match.name.match(/\d+/)?.[0] || "";
 
-      // only future match
       if (matchTime > now && !match.matchStarted) {
 
         matches.push({
-          team1: match.teamInfo[0].shortname,
-          team2: match.teamInfo[1].shortname,
 
-          team1Img: match.teamInfo[0].img,
-          team2Img: match.teamInfo[1].img,
+          team1: match.teamInfo?.[0]?.shortname,
+          team2: match.teamInfo?.[1]?.shortname,
+
+          team1Img: match.teamInfo?.[0]?.img,
+          team2Img: match.teamInfo?.[1]?.img,
 
           venue: match.venue,
-          city: "",
 
           matchDesc: `Match-${matchNumber}`,
 
@@ -236,40 +184,100 @@ app.get("/", async (req, res) => {
             minute: "2-digit",
             hour12: true
           }),
+
           startDate: matchTime.getTime()
+
         });
 
       }
 
     });
 
-    // nearest upcoming match
     matches.sort((a, b) => a.startDate - b.startDate);
 
-    const finalMatch = [matches[0]];
+    if (matches.length > 0) {
+      return [matches[0]];
+    }
 
-    // cache save
-    cachedMatches = finalMatch;
-    lastFetchTime = nowTime;
-
-    res.render("Home", { matches: finalMatch });
+    return null;
 
   } catch (error) {
 
-    console.log(error);
+    console.log("API Failed → Using manual match");
 
-    // agar error aaye aur cache ho to wahi dikhao
-    if (cachedMatches) {
-      return res.render("Home", { matches: cachedMatches });
-    }
-
-    res.render("Home", { matches: [] });
+    return null;
 
   }
+
+}
+
+
+// =========================
+// SMART CACHE + FALLBACK
+// =========================
+
+async function getMatches() {
+
+  const now = Date.now();
+
+  if (cachedMatches && now - lastFetchTime < CACHE_DURATION) {
+
+    console.log("Serving from CACHE");
+    return cachedMatches;
+
+  }
+
+  const newMatches = await fetchMatches();
+
+  if (newMatches) {
+
+    cachedMatches = newMatches;
+    lastFetchTime = now;
+
+    return newMatches;
+
+  }
+
+  console.log("Using MANUAL MATCH");
+
+  return [
+    {
+      matchDesc: "Match-8",
+      team1: "MI",
+      team2: "DC",
+      team1Img: "https://g.cricapi.com/iapi/226-637852956375593901.png?w=48",
+      team2Img: "https://g.cricapi.com/iapi/148-637874596301457910.png?w=48",
+      venue: "Arun Jaitley Stadium, Delhi,",
+      city: "Mumbai",
+      date: "4 April 2026 3:30 PM",
+      startDate: new Date("2026-04-04T15:30:00").getTime()
+    }
+  ];
+
+}
+
+
+// =========================
+// HOME ROUTE
+// =========================
+
+app.get("/", async (req, res) => {
+
+  const matches = await getMatches();
+
+  res.render("Home", { matches });
+
 });
-// Server start
+
+
+// =========================
+// SERVER START
+// =========================
+
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
+
   console.log(`Server running on port ${port}`);
+
 });
