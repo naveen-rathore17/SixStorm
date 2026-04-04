@@ -250,7 +250,7 @@ async function getMatches() {
       venue: "Arun Jaitley Stadium, Delhi,",
       city: "Mumbai",
       date: "4 April 2026 3:30 PM",
-      startDate: new Date("2026-04-05T19:30:00+05:30").getTime()
+      startDate: new Date("2026-04-04T15:30:00+05:30").getTime()
     }
   ];
 
