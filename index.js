@@ -242,15 +242,15 @@ async function getMatches() {
 
   return [
     {
-      matchDesc: "Match-8",
-      team1: "MI",
-      team2: "DC",
-      team1Img: "https://g.cricapi.com/iapi/226-637852956375593901.png?w=48",
-      team2Img: "https://g.cricapi.com/iapi/148-637874596301457910.png?w=48",
-      venue: "Arun Jaitley Stadium, Delhi,",
-      city: "Mumbai",
+      matchDesc: "Match-9",
+      team1: "GT",
+      team2: "RR",
+      team1Img: "https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Gujarat_Titans_Logo.svg/250px-Gujarat_Titans_Logo.svg.png",
+      team2Img: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/This_is_the_logo_for_Rajasthan_Royals%2C_a_cricket_team_playing_in_the_Indian_Premier_League_%28IPL%29.svg/250px-This_is_the_logo_for_Rajasthan_Royals%2C_a_cricket_team_playing_in_the_Indian_Premier_League_%28IPL%29.svg.png",
+      venue: "Narendra Modi Stadium",
+      city: "Ahmedabad",
       date: "4 April 2026 3:30 PM",
-      startDate: new Date("2026-04-04T15:30:00+05:30").getTime()
+      startDate: new Date("2026-04-04T19:30:00+05:30").getTime()
     }
   ];
 
