@@ -1,50 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link rel="icon" type="image/png" href="/images/favicon2.png" />
-    <link rel="shortcut icon" href="/images/favicon2.png" />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="SixStorm provides live cricket streaming access, match updates, and sports coverage from publicly available sources."
-    />
-
-    <meta
-      name="keywords"
-      content="cricket live, cricket streaming, live cricket match, IPL live, cricket watch online"
-    />
-
-    <meta name="author" content="Naveen Rathore" />
-
-    <meta property="og:title" content="SixStorm Live Cricket Streaming" />
-
-    <meta
-      property="og:description"
-      content="Watch live cricket matches and stay updated with match coverage."
-    />
-
-    <meta property="og:type" content="website" />
-
-    <meta property="og:url" content="https://sixstorm-live.onrender.com" />
-    <meta
-      property="og:image"
-      content="https://sixstorm-live.onrender.com/images/favicon.png"
-    />
-
-    <meta name="robots" content="index, follow" />
-
-    <title>Help Center | SixStorm</title>
-
-    <meta
-      name="description"
-      content="SixStorm Help Center. Find answers to common questions about live cricket streaming and platform usage."
-    />
-
-    <link rel="icon" type="image/png" href="/images/favicon2.png" />
-
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
+<%- include("partials/header") %>
 
   <body
     class="bg-gradient-to-r from-blue-900 via-black to-blue-950 min-h-screen flex flex-col"
@@ -166,24 +120,6 @@
 
     <!-- FOOTER -->
 
-    <footer
-      class="bg-[#020617]/80 border-t border-white/10 text-center py-6 text-sm text-gray-300"
-    >
-      © 2026
-
-      <span class="font-bold">
-        <span
-          class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
-          >Six</span
-        ><span class="text-white">Storm</span>
-      </span>
-
-      • Developed by Naveen Rathore
-
-      <br /><br />
-
-      <a href="/legal" class="hover:text-yellow-400">Disclaimer</a> |
-      <a href="/privacy-policy" class="hover:text-yellow-400">Privacy Policy</a>
-    </footer>
+    <%- include("partials/footer") %>
   </body>
 </html>

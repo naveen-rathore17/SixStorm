@@ -10,6 +10,7 @@ const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 
 const keepAlive = require("./keepAlive");
+const { title } = require("process");
 keepAlive();
 
 
@@ -97,14 +98,23 @@ app.use(
 // ROUTES
 // =========================
 
-app.get("/help", (req, res) => res.render("help"));
-app.get("/legal", (req, res) => res.render("info"));
-app.get("/privacy-policy", (req, res) => res.render("privacy"));
-app.get("/contact-us", (req, res) => res.render("Contact"));
+app.get("/help", (req, res) => res.render("help", {
+  title: "Help | SixStorm"
+}));
+app.get("/legal", (req, res) => res.render("info", {
+  title: "Legal Notice | SixStorm"
+}));
+app.get("/privacy-policy", (req, res) => res.render("privacy", {
+  title: "Privacy Policy | SixStorm"
+}));
+app.get("/contact-us", (req, res) => res.render("Contact", {
+  title: "Contact-us | SixStorm"
+}));
 
 app.get("/star_sport_1_live_HD_ipl", (req, res) => {
   res.render("sport-1", {
-    stream: process.env.url
+    stream: process.env.url,
+    title: "Star-Sport-1 HD LIVE🔴"
   });
 });
 
@@ -249,7 +259,7 @@ async function getMatches() {
       team2Img: "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/This_is_the_logo_for_Rajasthan_Royals%2C_a_cricket_team_playing_in_the_Indian_Premier_League_%28IPL%29.svg/250px-This_is_the_logo_for_Rajasthan_Royals%2C_a_cricket_team_playing_in_the_Indian_Premier_League_%28IPL%29.svg.png",
       venue: "Narendra Modi Stadium",
       city: "Ahmedabad",
-      date: "4 April 2026 3:30 PM",
+      date: "4 April 2026 7:30 PM",
       startDate: new Date("2026-04-04T19:30:00+05:30").getTime()
     }
   ];
@@ -265,7 +275,8 @@ app.get("/", async (req, res) => {
 
   const matches = await getMatches();
 
-  res.render("Home", { matches });
+  res.render("Home",
+    { matches,title:"SixStorm-LIVE" });
 
 });
 
