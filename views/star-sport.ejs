@@ -14,8 +14,6 @@
 
 <div class="flex gap-3 md:gap-6 text-xs md:text-base font-semibold">
 <a href="/help" class="hover:text-red-400 transition">Help</a>
-<a href="/legal" class="hover:text-red-400 transition">Disclaimer</a>
-<a href="/about-us" class="hover:text-red-400 transition">About</a>
 <a href="/cricket-news" class="hover:text-red-400 transition">Updates</a>
 <a href="/contact-us" class="hover:text-red-400 transition">Contact</a>
 </div>
@@ -42,9 +40,10 @@ Storm
 id="video"
 class="w-full h-full object-contain"
 autoplay
+muted
 playsinline
-preload="auto">
-</video>
+preload="metadata"
+></video>
 
 </div>
 
@@ -83,9 +82,7 @@ background:#ff0000 !important;
 background:#0066ff !important;
 }
 
-/* video{
-filter:brightness(1.15) contrast(1.15) saturate(1.2);
-} */
+
 
 </style>
 
@@ -138,29 +135,45 @@ const video=document.getElementById("video")
 const player=new shaka.Player(video)
 
 /* PLAYER CONFIG */
+/* PLAYER CONFIG (MOBILE OPTIMIZED) */
 
 player.configure({
 
 streaming:{
-bufferingGoal:30,
-rebufferingGoal:5,
-bufferBehind:60,
-lowLatencyMode:false,
+
+bufferingGoal:10,        // fast start
+rebufferingGoal:2,       // quick recovery
+bufferBehind:20,
+
+lowLatencyMode:true,
 
 retryParameters:{
-maxAttempts:10,
-baseDelay:1000,
-backoffFactor:2,
-timeout:30000
+maxAttempts:8,
+baseDelay:500,
+backoffFactor:1.5,
+timeout:20000
 }
+
 },
 
 abr:{
 enabled:true,
-defaultBandwidthEstimate:2500000,
-switchInterval:4,
-bandwidthUpgradeTarget:0.75,
-bandwidthDowngradeTarget:0.90
+
+defaultBandwidthEstimate:1500000, // mobile friendly
+
+switchInterval:2,   // fast quality switch
+
+bandwidthUpgradeTarget:0.65,
+bandwidthDowngradeTarget:0.95
+
+},
+
+manifest:{
+retryParameters:{
+maxAttempts:6,
+baseDelay:500,
+backoffFactor:2
+}
 },
 
 drm:{
@@ -319,7 +332,7 @@ startStream()
 
 </script>
 <!-- Inspect Devtools Disble -->
-<script>
+ <script>
 
 /* =========================
 RIGHT CLICK BLOCK
@@ -472,7 +485,7 @@ console.error = function(){};
 
 <!-- Denied Direct Player Streaming -->
 
-<script>
+ <script>
 if(!document.referrer.includes("https://sixstorm-live.onrender.com")) {
 
 document.body.innerHTML = `
@@ -509,7 +522,7 @@ document.body.innerHTML = `
 
 throw new Error("Direct access blocked");
 }
-</script>
+</script> 
 
 </body>
 </html>  
