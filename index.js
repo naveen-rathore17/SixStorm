@@ -161,7 +161,7 @@ app.get("/star_sport_1_live_HD_ipl", (req, res) => {
 
   res.render("sport-1", {
     stream: process.env.url,
-    title: "Star-Sport-1 HD LIVE 🔴"
+    title: "Star-Sport HD LIVE 🔴"
   });
 
 });
