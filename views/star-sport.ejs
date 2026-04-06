@@ -61,13 +61,9 @@ preload="metadata"
 <style>
 
 .shaka-controls-container{
-opacity:0;
-transition:opacity .3s;
-background:linear-gradient(transparent,rgba(0,0,0,.6)) !important;
-}
-
-#container:hover .shaka-controls-container{
 opacity:1;
+transition:opacity .2s;
+background:linear-gradient(transparent,rgba(0,0,0,.6)) !important;
 }
 
 .shaka-seek-bar-container{
@@ -205,6 +201,13 @@ controlPanelElements:[
 "picture_in_picture",
 "fullscreen"
 ]
+})
+/* MOBILE TAP FIX */
+
+const controls = ui.getControls();
+
+video.addEventListener("touchstart",()=>{
+controls.setEnabled(true)
 })
 
 /* COOKIE SYSTEM */
