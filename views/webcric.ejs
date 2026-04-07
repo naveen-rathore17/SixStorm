@@ -21,7 +21,8 @@
 <div class="w-full max-w-5xl p-4 text-center">
 
 <h1 class="text-2xl md:text-3xl font-bold text-red-500">
-SixStorm Live
+<span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Six</span>
+      <span class="text-white">Storm</span>
 </h1>
 
 <p class="text-gray-400 text-sm mt-1">
@@ -36,11 +37,28 @@ Watch Live Cricket Streaming
 
 <div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
 
-<!-- LOADING SPINNER -->
+<!-- 🔴 LIVE BADGE -->
 
-<div id="loader" class="absolute inset-0 flex items-center justify-center bg-black z-10">
+<div class="absolute top-3 left-3 z-20 flex items-center gap-2 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
 
-<div class="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent"></div>
+<span class="w-2 h-2 bg-white rounded-full"></span>
+LIVE
+
+</div>
+
+<!-- ⏳ LOADING SCREEN -->
+
+<div id="loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-10 text-center px-6">
+
+<div class="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-6"></div>
+
+<h2 class="text-xl md:text-2xl font-bold">
+Please Wait...
+</h2>
+
+<p class="text-gray-400 mt-2 text-sm md:text-base max-w-md">
+Stream is loading. This may take a few seconds depending on your internet speed.
+</p>
 
 </div>
 
@@ -49,14 +67,12 @@ Watch Live Cricket Streaming
 <video
 id="video"
 class="w-full aspect-video bg-black"
-controls
 autoplay
 muted
 playsinline
+controls
 
 > </video>
-
-
 
 </div>
 
@@ -75,58 +91,80 @@ Home
 <!-- FOOTER -->
 
 <div class="mt-8 text-xs text-gray-500 text-center">
-Stream may take a few seconds to load
+Powered by SixStorm
 </div>
 
 <script>
 
 const video = document.getElementById("video")
-
 const loader = document.getElementById("loader")
 
 const videoSrc = "<%- stream %>"
-
 
 if (Hls.isSupported()) {
 
 const hls = new Hls({
 
-maxBufferLength:10,
-liveSyncDurationCount:2,
-liveMaxLatencyDurationCount:5,
+startPosition:-1,
+liveSyncDurationCount:1,
+liveMaxLatencyDurationCount:3,
+maxBufferLength:6,
+maxMaxBufferLength:10,
+backBufferLength:0,
 enableWorker:true,
 lowLatencyMode:true
 
 })
 
 hls.loadSource(videoSrc)
-
 hls.attachMedia(video)
+hls.startLoad(0)
 
 hls.on(Hls.Events.MANIFEST_PARSED,function(){
 
 loader.style.display="none"
-
 video.play()
 
 })
 
-hls.on(Hls.Events.ERROR,function(){
+/* 🔄 AUTO RECONNECT */
 
-loader.innerHTML="Stream Error. Try Refresh."
+hls.on(Hls.Events.ERROR,function(event,data){
+
+if(data.fatal){
+
+loader.style.display="flex"
+loader.innerHTML="<h2 class='text-xl font-bold'>Reconnecting Stream...</h2>"
+
+switch(data.type){
+
+case Hls.ErrorTypes.NETWORK_ERROR:
+hls.startLoad()
+break
+
+case Hls.ErrorTypes.MEDIA_ERROR:
+hls.recoverMediaError()
+break
+
+default:
+loader.innerHTML="<h2 class='text-xl font-bold'>Stream Error<br>Refresh Page</h2>"
+break
+
+}
+
+}
 
 })
 
 }
 
-else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+else if (video.canPlayType("application/vnd.apple.mpegurl")) {
 
 video.src = videoSrc
 
 video.addEventListener("loadedmetadata",function(){
 
 loader.style.display="none"
-
 video.play()
 
 })
