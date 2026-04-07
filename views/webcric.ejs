@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SixStorm Live</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+</head>
+
+<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center">
+
+<!-- HEADER -->
+
+<div class="w-full max-w-5xl p-4 text-center">
+
+<h1 class="text-2xl md:text-3xl font-bold text-red-500">
+SixStorm Live
+</h1>
+
+<p class="text-gray-400 text-sm mt-1">
+Watch Live Cricket Streaming
+</p>
+
+</div>
+
+<!-- PLAYER -->
+
+<div class="w-full max-w-5xl px-4">
+
+<div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
+
+<!-- LOADING SPINNER -->
+
+<div id="loader" class="absolute inset-0 flex items-center justify-center bg-black z-10">
+
+<div class="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent"></div>
+
+</div>
+
+<!-- VIDEO -->
+
+<video
+id="video"
+class="w-full aspect-video bg-black"
+controls
+autoplay
+muted
+playsinline
+
+> </video>
+
+
+
+</div>
+
+</div>
+
+<!-- BUTTONS -->
+
+<div class="flex gap-4 mt-6">
+
+<a href="/" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-full font-semibold transition">
+Home
+</a>
+
+</div>
+
+<!-- FOOTER -->
+
+<div class="mt-8 text-xs text-gray-500 text-center">
+Stream may take a few seconds to load
+</div>
+
+<script>
+
+const video = document.getElementById("video")
+
+const loader = document.getElementById("loader")
+
+const videoSrc = "<%- stream %>"
+
+
+if (Hls.isSupported()) {
+
+const hls = new Hls({
+
+maxBufferLength:10,
+liveSyncDurationCount:2,
+liveMaxLatencyDurationCount:5,
+enableWorker:true,
+lowLatencyMode:true
+
+})
+
+hls.loadSource(videoSrc)
+
+hls.attachMedia(video)
+
+hls.on(Hls.Events.MANIFEST_PARSED,function(){
+
+loader.style.display="none"
+
+video.play()
+
+})
+
+hls.on(Hls.Events.ERROR,function(){
+
+loader.innerHTML="Stream Error. Try Refresh."
+
+})
+
+}
+
+else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+
+video.src = videoSrc
+
+video.addEventListener("loadedmetadata",function(){
+
+loader.style.display="none"
+
+video.play()
+
+})
+
+}
+
+</script>
+
+</body>
+</html>

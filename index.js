@@ -149,6 +149,13 @@ app.get("/cricket-news", (req, res) =>
 app.get("/developer_tools_warning", (req, res) =>
   res.render("dev-tools", { title: "⚠ Illegal Activity Detected| SixStorm" })
 );
+app.get("/live_ipl",(req,res)=>{
+
+res.render("webcric",{
+stream:"https://mut001.myturn1.top:8088/live/webcrichindi/playlist.m3u8?vidictid=205508615319&id=119771&pk=ea82b0d5acb83510df48a209d2b2c52d9272adf8a6b71593f51bffd4815cde4ab509c150a86cee3d9a6bb08e306da03251b5c0931ec9062338ce42d1790a7aee"
+})
+
+})
 
 
 // =====================================================
