@@ -116,7 +116,6 @@ app.use(
   })
 );
 
-
 // =====================================================
 // ROUTES (STATIC PAGES)
 // =====================================================
@@ -155,17 +154,17 @@ app.get("/developer_tools_warning", (req, res) =>
 // =====================================================
 // STREAM PAGE
 // =====================================================
+app.get("/stream", async (req,res)=>{
+  const response = await fetch("https://live.khantv.pk/update/?id=star_sports3")
+  const html = await response.text()
+  res.send(html)
+}) 
 
 app.get("/star_sport_1_live_HD_ipl", (req, res) => {
 
-  res.render("sport-1", {
-    stream: process.env.url,
-    title: "Star-Sport HD LIVE 🔴"
-  });
+  res.redirect("https://sixstorm-live2.onrender.com/")
 
 });
-
-
 
 app.get("/star_sport_live_Hd", (req, res) => {
   res.render("star-sport", {
@@ -365,6 +364,8 @@ app.get("/", async (req, res) => {
   });
 
 });
+
+
 
 
 // =====================================================

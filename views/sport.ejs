@@ -1,0 +1,68 @@
+<%- include("partials/header") %>
+
+<body class="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black min-h-screen text-white flex flex-col">
+
+<!-- PAGE CONTAINER -->
+<div class="max-w-6xl mx-auto px-4 py-6">
+
+  <!-- HEADING -->
+  <div class="text-center mb-6">
+
+    <h1 class="text-3xl md:text-4xl font-bold tracking-wide">
+      IPL 2026 Live Streaming
+    </h1>
+
+    <p class="text-gray-400 mt-2">
+      Watch Live Cricket Matches in HD
+    </p>
+
+    <!-- LIVE BADGE -->
+    <div class="flex justify-center mt-4">
+      <div class="flex items-center gap-2 bg-red-600 px-4 py-1 rounded-full shadow-lg animate-pulse">
+
+        <span class="w-3 h-3 bg-white rounded-full animate-ping"></span>
+
+        <span class="font-semibold tracking-widest">
+          LIVE
+        </span>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PLAYER CARD -->
+  <div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10">
+
+    <!-- PLAYER -->
+    <div class="aspect-video">
+
+      <iframe 
+        src="/stream"
+        class="w-full h-full"
+        frameborder="0"
+        allowfullscreen
+        allow="encrypted-media"
+        scrolling="no">
+      </iframe>
+
+    </div>
+
+    <!-- ADS BLOCKER OVERLAY -->
+    <div class="absolute top-0 left-0 w-full h-10 bg-black pointer-events-none"></div>
+
+  </div>
+
+  <!-- INFO -->
+  <div class="mt-6 text-center text-gray-400 text-sm">
+
+    <p>
+      If the stream does not start, please refresh the page.
+    </p>
+
+  </div>
+
+</div>
+
+</body>
+</html>
