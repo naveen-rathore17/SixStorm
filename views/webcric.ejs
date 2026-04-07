@@ -1,181 +1,118 @@
 <!DOCTYPE html>
+
 <html lang="en">
-
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>SixStorm Live</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-</head>
-
-<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center">
-
-<!-- HEADER -->
-
-<div class="w-full max-w-5xl p-4 text-center">
-
-<h1 class="text-2xl md:text-3xl font-bold text-red-500">
-<span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Six</span>
-<span class="text-white">Storm</span>
-</h1>
-
-<p class="text-gray-400 text-sm mt-1">
-Watch Live Cricket Streaming
-</p>
-
-</div>
-
-<!-- PLAYER -->
-
-<div class="w-full max-w-5xl px-4">
-
-<div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-
-<!-- LIVE BADGE -->
-
-<div class="absolute top-3 left-3 z-20 flex items-center gap-2 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full animate-pulse">
-<span class="w-2 h-2 bg-white rounded-full"></span>
-LIVE
-</div>
-
-<!-- LOADER -->
-
-<div id="loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-10 text-center px-6">
-
-<div class="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-6"></div>
-
-<h2 class="text-xl md:text-2xl font-bold">
-Loading Stream...
-</h2>
-
-<p class="text-gray-400 mt-2 text-sm md:text-base">
-Please wait while stream loads
-</p>
-
-</div>
-
-<!-- VIDEO -->
-
-<video
-id="video"
-class="w-full aspect-video bg-black"
-controls
-playsinline
-muted
-autoplay
-></video>
-
-</div>
-
-</div>
-
-<!-- BUTTON -->
-
-<div class="flex gap-4 mt-6">
-<a href="/" class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-full font-semibold transition">
-Home
-</a>
-</div>
-
-<!-- FOOTER -->
-
-<div class="mt-8 text-xs text-gray-500 text-center">
-Powered by SixStorm
-</div>
-
-<script>
-
-const video = document.getElementById("video")
-const loader = document.getElementById("loader")
-
-const videoSrc = "<%- stream %>"
-
-
-function startStream(){
-
-if (Hls.isSupported()) {
-
-const hls = new Hls({
-enableWorker:true,
-lowLatencyMode:false,
-maxBufferLength:20
-})
-
-hls.loadSource(videoSrc)
-hls.attachMedia(video)
-
-hls.on(Hls.Events.MANIFEST_PARSED,function(){
-
-loader.style.display="none"
-
-video.play().catch(()=>{
-console.log("Autoplay blocked")
-})
-
-})
-
-hls.on(Hls.Events.ERROR,function(event,data){
-
-if(data.fatal){
-
-console.log("Stream error:",data)
-
-loader.style.display="flex"
-loader.innerHTML="<h2 class='text-xl font-bold'>Reconnecting Stream...</h2>"
-
-switch(data.type){
-
-case Hls.ErrorTypes.NETWORK_ERROR:
-hls.startLoad()
-break
-
-case Hls.ErrorTypes.MEDIA_ERROR:
-hls.recoverMediaError()
-break
-
-default:
-location.reload()
-break
-
-}
-
-}
-
-})
-
-}
-
-else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-
-video.src = videoSrc
-
-video.addEventListener("loadedmetadata",function(){
-
-loader.style.display="none"
-video.play()
-
-})
-
-}
-
-}
-
-startStream()
-
-
-/* MOBILE TAP FIX */
-
-document.body.addEventListener("click",function(){
-
-video.play().catch(()=>{})
-
-})
-
-</script>
-
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SixStorm Live</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  </head>
+
+  <body
+    class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center"
+  >
+    <!-- HEADER -->
+
+    <div class="w-full max-w-5xl p-4 text-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-red-500">
+        <span
+          class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+          >Six</span
+        ><span class="text-white">Storm</span>
+      </h1>
+
+      <p class="text-gray-400 text-sm mt-1">Watch Live Cricket Streaming</p>
+    </div>
+
+    <!-- PLAYER -->
+
+    <div class="w-full max-w-5xl px-4">
+      <div
+        class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800"
+      >
+        <!-- LOADING SPINNER -->
+
+        <div
+          id="loader"
+          class="absolute inset-0 flex items-center justify-center bg-black z-10"
+        >
+          <div
+            class="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent"
+          ></div>
+        </div>
+
+        <!-- VIDEO -->
+
+        <video
+          id="video"
+          class="w-full aspect-video bg-black"
+          controls
+          autoplay
+          muted
+          playsinline
+        ></video>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+
+    <div class="flex gap-4 mt-6">
+      <a
+        href="/"
+        class="bg-red-600 hover:bg-red-700 px-5 py-2 rounded-full font-semibold transition"
+      >
+        Home
+      </a>
+    </div>
+
+    <!-- FOOTER -->
+
+    <div class="mt-8 text-xs text-gray-500 text-center">
+      Stream may take a few seconds to load
+    </div>
+
+    <script>
+      const video = document.getElementById("video");
+
+      const loader = document.getElementById("loader");
+
+      const videoSrc = "<%- stream %>";
+
+      if (Hls.isSupported()) {
+        const hls = new Hls({
+          maxBufferLength: 10,
+          liveSyncDurationCount: 2,
+          liveMaxLatencyDurationCount: 5,
+          enableWorker: true,
+          lowLatencyMode: true,
+        });
+
+        hls.loadSource(videoSrc);
+
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          loader.style.display = "none";
+
+          video.play();
+        });
+
+        hls.on(Hls.Events.ERROR, function () {
+          loader.innerHTML = "Stream Error. Try Refresh.";
+        });
+      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = videoSrc;
+
+        video.addEventListener("loadedmetadata", function () {
+          loader.style.display = "none";
+
+          video.play();
+        });
+      }
+    </script>
+  </body>
 </html>
