@@ -149,13 +149,43 @@ app.get("/cricket-news", (req, res) =>
 app.get("/developer_tools_warning", (req, res) =>
   res.render("dev-tools", { title: "⚠ Illegal Activity Detected| SixStorm" })
 );
-app.get("/live_ipl",(req,res)=>{
 
-res.render("webcric",{
-stream:"https://mut001.myturn1.top:8088/live/starsports01/playlist.m3u8?vidictid=205516334614&id=123144&pk=40baf8e8b0845e8df69d37c2fa7e46cb9638090f7df9bc67852d69b7253a93ae124fb8a38b9ddb45bde9ffc89149d751348bedeb16a474b9e24cedc0862ee9f0",
-title:"Live-IPL | SixStorm"
-})
 
+app.get("/stream", async (req, res) => {
+  const url = "https://mut001.myturn1.top:8088/live/starsports01/playlist.m3u8";
+
+  try {
+    const response = await axios({
+      method: "GET",
+      url: url,
+      responseType: "stream",
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Referer": "https://google.com"
+      }
+    });
+
+    res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
+
+    response.data.pipe(res);
+
+  } catch (err) {
+    res.send("Stream error");
+  }
+});
+
+app.get("/live/starhindi", (req, res) => {
+
+  res.render("redirect", {
+    streamUrl: "https://streamcrichd.com/update/star1hi.php"
+  });
+
+});
+
+/* Home */
+
+app.get("/live-hindi", (req,res)=>{
+  res.redirect("/live/starhindi")
 })
 
 

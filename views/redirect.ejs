@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SixStorm Live</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white flex items-center justify-center min-h-screen">
+
+<div class="text-center max-w-md">
+
+<!-- LIVE badge -->
+<div class="mb-6">
+<span class="bg-red-600 px-4 py-1 rounded-full text-sm font-semibold animate-pulse">
+🔴 LIVE
+</span>
+</div>
+
+<h1 class="text-2xl font-bold mb-3">
+Star Sports Hindi HD
+</h1>
+
+<p class="text-gray-400 mb-8">
+Connecting to Live Stream...
+</p>
+
+<!-- loader -->
+<div class="flex justify-center mb-6">
+
+<div class="w-12 h-12 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+
+</div>
+
+<!-- progress bar -->
+
+<div class="w-60 h-2 bg-gray-700 rounded mx-auto overflow-hidden">
+
+<div id="progress"
+class="h-full bg-red-600"
+style="width:10%">
+</div>
+
+</div>
+
+<p class="text-gray-500 text-sm mt-6">
+Please wait while we connect to the live server
+</p>
+
+</div>
+
+<script>
+
+const url = "<%= streamUrl %>"
+
+let progress = 10
+
+const interval = setInterval(()=>{
+
+progress += 10
+
+document.getElementById("progress").style.width = progress + "%"
+
+if(progress >= 100){
+
+clearInterval(interval)
+
+window.location.href = url
+
+}
+
+},400)
+
+</script>
+
+</body>
+</html>
