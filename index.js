@@ -152,7 +152,7 @@ app.get("/developer_tools_warning", (req, res) =>
 app.get("/live_ipl",(req,res)=>{
 
 res.render("webcric",{
-stream:"https://mut001.myturn1.top:8088/live/webcrichindi/playlist.m3u8?vidictid=205508615319&id=119771&pk=ea82b0d5acb83510df48a209d2b2c52d9272adf8a6b71593f51bffd4815cde4ab509c150a86cee3d9a6bb08e306da03251b5c0931ec9062338ce42d1790a7aee",
+stream:"https://mut001.myturn1.top:8088/live/starsports01/playlist.m3u8?vidictid=205516334614&id=123144&pk=40baf8e8b0845e8df69d37c2fa7e46cb9638090f7df9bc67852d69b7253a93ae124fb8a38b9ddb45bde9ffc89149d751348bedeb16a474b9e24cedc0862ee9f0",
 title:"Live-IPL | SixStorm"
 })
 
