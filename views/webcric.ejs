@@ -1,94 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>SixStorm Live - IPL 2026 Live Streaming</title>
+<head>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  </head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen flex flex-col items-center">
+<title><%= title %></title>
 
-    <!-- HEADER -->
-    <div class="w-full max-w-5xl p-4 text-center">
-      <h1 class="text-3xl md:text-4xl font-bold text-red-500 mb-1">
-        <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Six</span>
-        <span class="text-white">Storm</span>
-      </h1>
-      <p class="text-gray-300 text-lg mt-2">Watch IPL 2026 Live Streaming - All Matches, Anytime, Anywhere</p>
-      <p class="text-gray-400 text-sm mt-1">Catch your favorite teams live and enjoy the thrill of cricket!</p>
-    </div>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-    <!-- PLAYER -->
-    <div class="w-full max-w-5xl px-4">
-      <div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-gray-800">
-        
-        <!-- LOADING SPINNER -->
-        <div id="loader" class="absolute inset-0 flex flex-col items-center justify-center bg-black z-10">
-          <div class="animate-spin rounded-full h-12 w-12 border-4 border-red-500 border-t-transparent mb-4"></div>
-          <p class="text-white font-semibold text-lg">Loading stream...</p>
-          <p class="text-gray-400 text-sm mt-1">Please wait up to 1 minute if stream is slow</p>
-        </div>
+</head>
 
-        <!-- VIDEO -->
-        <video id="video" class="w-full aspect-video bg-black" controls autoplay muted playsinline></video>
-      </div>
-    </div>
+<body class="bg-black text-white min-h-screen flex flex-col items-center">
 
-    <!-- BUTTONS -->
-    <div class="flex gap-4 mt-6">
-      <a href="/" class="bg-red-600 hover:bg-red-700 px-6 py-3 rounded-full font-semibold text-lg transition">
-        Home
-      </a>
-    </div>
+<!-- HEADER -->
 
-    <!-- FOOTER MESSAGE -->
-    <div class="mt-10 text-center px-4 max-w-2xl">
-      <p class="text-xl md:text-2xl font-bold text-white mb-2">
-        Stream May Take A Few Seconds To Load
-      </p>
-      <p class="text-gray-400 text-lg">
-        Please be patient while the IPL 2026 live stream loads. Enjoy uninterrupted live cricket action with SixStorm! 
-        Make sure your internet connection is stable for the best experience.
-      </p>
-    </div>
+<div class="w-full max-w-5xl text-center p-4">
 
-    <script>
-      const video = document.getElementById("video");
-      const loader = document.getElementById("loader");
-      const videoSrc = "<%- stream %>";
+<h1 class="text-3xl font-bold text-red-500">
+SixStorm
+</h1>
 
-      if (Hls.isSupported()) {
-        const hls = new Hls({
-          maxBufferLength: 10,
-          liveSyncDurationCount: 2,
-          liveMaxLatencyDurationCount: 5,
-          enableWorker: true,
-          lowLatencyMode: true,
-        });
+<p class="text-gray-400">
+Watch IPL 2026 Live Streaming
+</p>
 
-        hls.loadSource(videoSrc);
-        hls.attachMedia(video);
+</div>
 
-        hls.on(Hls.Events.MANIFEST_PARSED, function () {
-          loader.style.display = "none";
-          video.play();
-        });
 
-        hls.on(Hls.Events.ERROR, function () {
-          loader.innerHTML = "<p class='text-red-500 font-bold'>Stream Error. Try Refresh.</p>";
-        });
-      } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = videoSrc;
+<!-- PLAYER -->
 
-        video.addEventListener("loadedmetadata", function () {
-          loader.style.display = "none";
-          video.play();
-        });
-      }
-    </script>
-  </body>
+<div class="w-full max-w-5xl px-4">
+
+<div class="relative bg-black rounded-xl overflow-hidden">
+
+<!-- Loader -->
+
+<div id="loader"
+class="absolute inset-0 flex items-center justify-center bg-black z-10">
+
+<p class="text-white text-lg animate-pulse">
+Loading Stream...
+</p>
+
+</div>
+
+<video
+id="video"
+class="w-full aspect-video"
+controls
+playsinline
+muted
+></video>
+
+</div>
+
+</div>
+
+
+<!-- BUTTON -->
+
+<div class="mt-6">
+
+<a href="/"
+class="bg-red-600 px-6 py-3 rounded-full">
+Home
+</a>
+
+</div>
+
+
+<script>
+
+const video = document.getElementById("video");
+const loader = document.getElementById("loader");
+
+const videoSrc = "<%- stream %>";
+
+let hls;
+
+function startStream(){
+
+if (Hls.isSupported()) {
+
+hls = new Hls({
+
+maxBufferLength: 30,
+maxMaxBufferLength: 60,
+
+liveSyncDurationCount: 3,
+liveMaxLatencyDurationCount: 10,
+
+enableWorker: true,
+lowLatencyMode: true
+
+});
+
+hls.loadSource(videoSrc);
+hls.attachMedia(video);
+
+hls.on(Hls.Events.MANIFEST_PARSED,function(){
+
+loader.style.display="none";
+
+video.play().catch(()=>{
+
+video.muted=true;
+video.play();
+
+});
+
+});
+
+hls.on(Hls.Events.ERROR,function(event,data){
+
+console.log("HLS ERROR:",data);
+
+if(data.fatal){
+
+switch(data.type){
+
+case Hls.ErrorTypes.NETWORK_ERROR:
+console.log("Network Error -> Reloading");
+hls.startLoad();
+break;
+
+case Hls.ErrorTypes.MEDIA_ERROR:
+console.log("Media Error -> Recovering");
+hls.recoverMediaError();
+break;
+
+default:
+console.log("Fatal Error -> Restarting");
+setTimeout(startStream,2000);
+
+}
+
+}
+
+});
+
+}
+
+else if(video.canPlayType("application/vnd.apple.mpegurl")){
+
+video.src = videoSrc;
+
+video.addEventListener("loadedmetadata",function(){
+
+loader.style.display="none";
+
+video.play();
+
+});
+
+}
+
+}
+
+startStream();
+
+</script>
+
+
+</body>
 </html>
