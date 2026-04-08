@@ -175,18 +175,13 @@ app.get("/stream", async (req, res) => {
 });
 
 app.get("/live/starhindi", (req, res) => {
-
-  res.render("redirect", {
-    streamUrl: "https://streamcrichd.com/update/star1hi.php"
+  res.render("redirect",{
+    title:"SixStorm | IPL-2026"
   });
 
 });
 
 /* Home */
-
-app.get("/live-hindi", (req,res)=>{
-  res.redirect("/live/starhindi")
-})
 
 
 // =====================================================
@@ -200,7 +195,7 @@ app.get("/stream", async (req,res)=>{
 
 app.get("/star_sport_1_live_HD_ipl", (req, res) => {
 
-  res.redirect("https://sixstorm-live2.onrender.com/")
+  res.redirect("https://allrounder-live2.pages.dev/star/modder-guy")
 
 });
 

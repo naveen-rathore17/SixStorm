@@ -1,26 +1,81 @@
-<%- include("partials/header") %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
-<body class="bg-gradient-to-r from-black via-blue-950 to-black min-h-screen text-white flex items-center justify-center">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <div class="text-center max-w-xl bg-black/60 backdrop-blur-md p-8 rounded-2xl shadow-xl">
+<title>SixStorm Live</title>
 
-    <h1 class="text-3xl md:text-4xl font-bold mb-4">
-      🏏 Live Cricket Tournament
-    </h1>
+<script src="https://cdn.tailwindcss.com"></script>
 
-    <p class="text-gray-300 text-sm md:text-base leading-relaxed">
-      The live stream for the current cricket tournament is available on the 
-      <span class="text-yellow-400 font-semibold">Home Page</span>.  
-      Please go back to the Home Page and click on 
-      <span class="text-red-400 font-semibold">“Watch Now”</span> to start watching the match.
-    </p>
+</head>
 
-    <a href="/" 
-       class="inline-block mt-6 bg-red-600 hover:bg-red-700 px-6 py-3 rounded-lg text-sm font-semibold transition">
-       Go to Home Page
-    </a>
+<body class="bg-black flex flex-col items-center justify-center min-h-screen text-white">
 
-  </div>
+<!-- SIXSTORM BADGE -->
+<div class="mb-4 text-center">
+
+<h1 class="text-3xl font-bold tracking-widest text-red-500">
+SixStorm
+</h1>
+
+<p class="text-xs text-gray-400 tracking-wider">
+Live Stream
+</p>
+
+</div>
+
+
+<!-- PLAYER -->
+<div id="video-wrapper" class="relative w-full max-w-4xl aspect-video bg-black rounded-lg overflow-hidden shadow-2xl">
+
+<iframe
+id="cricket-video"
+class="w-full h-full"
+allowfullscreen
+allow="autoplay; fullscreen"
+frameborder="0">
+</iframe>
+
+<!-- FULLSCREEN BUTTON -->
+<button onclick="toggleFullscreen()"
+class="absolute bottom-3 right-3 bg-black/70 border border-red-500 text-red-500 p-2 rounded-lg hover:bg-red-500 hover:text-white transition">
+
+<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+<polyline points="15 3 21 3 21 9"/>
+<polyline points="9 21 3 21 3 15"/>
+<line x1="21" y1="3" x2="14" y2="10"/>
+<line x1="3" y1="21" x2="10" y2="14"/>
+
+</svg>
+
+</button>
+
+</div>
+
+
+<script>
+
+const IFRAME_URL = "https://tvplaytv.pages.dev/p1?url=https://hls.ratanliton2.workers.dev?url=https://allinonereborn.online/opplex/live128.php?id=167573";
+
+document.getElementById("cricket-video").src = IFRAME_URL;
+
+const wrapper = document.getElementById("video-wrapper");
+
+function toggleFullscreen(){
+
+if(!document.fullscreenElement){
+wrapper.requestFullscreen();
+}else{
+document.exitFullscreen();
+}
+
+}
+
+</script>
 
 </body>
 </html>
