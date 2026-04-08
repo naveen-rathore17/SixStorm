@@ -1,68 +1,269 @@
-<%- include("partials/header") %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SixStorm Live</title>
+<meta name="referrer" content="no-referrer">
 
-<body class="bg-gradient-to-br from-[#020617] via-[#0f172a] to-black min-h-screen text-white flex flex-col">
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"/>
 
-<!-- PAGE CONTAINER -->
-<div class="max-w-6xl mx-auto px-4 py-6">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+width:100%;
+height:100%;
+background:#000;
+overflow:hidden;
+font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif
+}
 
-  <!-- HEADING -->
-  <div class="text-center mb-6">
+.shaka-video-container{
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 
-    <h1 class="text-3xl md:text-4xl font-bold tracking-wide">
-      IPL 2026 Live Streaming
-    </h1>
+video{
+width:100%;
+height:100%;
+object-fit:contain;
+background:#000;
+}
 
-    <p class="text-gray-400 mt-2">
-      Watch Live Cricket Matches in HD
-    </p>
+/* SixStorm Title */
+.site-title{
+position:fixed;
+top:15px;
+left:15px;
+z-index:50;
+font-size:18px;
+font-weight:700;
+color:white;
+letter-spacing:1px;
+}
 
-    <!-- LIVE BADGE -->
-    <div class="flex justify-center mt-4">
-      <div class="flex items-center gap-2 bg-red-600 px-4 py-1 rounded-full shadow-lg animate-pulse">
+/* LIVE Badge */
+.live-badge{
+position:fixed;
+top:15px;
+right:15px;
+z-index:50;
+background:red;
+color:white;
+font-weight:bold;
+font-size:13px;
+padding:5px 10px;
+border-radius:6px;
+animation:pulse 1.5s infinite;
+}
 
-        <span class="w-3 h-3 bg-white rounded-full animate-ping"></span>
+@keyframes pulse{
+0%{opacity:1}
+50%{opacity:.5}
+100%{opacity:1}
+}
 
-        <span class="font-semibold tracking-widest">
-          LIVE
-        </span>
+/* watermark */
+.custom-watermark{
+position:absolute;
+z-index:40;
+pointer-events:none;
+top:65%;
+left:6%;
+transform:translateY(-50%);
+font-size:11px;
+font-weight:600;
+color:rgba(255,255,255,0.12);
+}
 
-      </div>
-    </div>
+/* blocker */
+.block-overlay{
+position:fixed;
+inset:0;
+z-index:99999;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#000;
+text-align:center;
+}
 
-  </div>
+.block-box{
+padding:40px;
+max-width:500px;
+width:90%;
+background:#111;
+border-radius:16px;
+border:1px solid rgba(255,255,255,0.1);
+}
 
-  <!-- PLAYER CARD -->
-  <div class="relative bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10">
+.block-title{
+font-size:32px;
+font-weight:800;
+color:#fff;
+margin-bottom:15px;
+}
 
-    <!-- PLAYER -->
-    <div class="aspect-video">
+.block-sub{
+font-size:14px;
+color:rgba(255,255,255,0.6);
+}
 
-      <iframe 
-        src="/stream"
-        class="w-full h-full"
-        frameborder="0"
-        allowfullscreen
-        allow="encrypted-media"
-        scrolling="no">
-      </iframe>
+@media(max-width:700px){
+.site-title{font-size:14px}
+.live-badge{font-size:11px}
+.custom-watermark{font-size:9px;top:60%;left:16%}
+}
+</style>
 
-    </div>
+</head>
 
-    <!-- ADS BLOCKER OVERLAY -->
-    <div class="absolute top-0 left-0 w-full h-10 bg-black pointer-events-none"></div>
+<body>
 
-  </div>
+<div class="site-title">SixStorm</div>
+<div class="live-badge">● LIVE</div>
 
-  <!-- INFO -->
-  <div class="mt-6 text-center text-gray-400 text-sm">
-
-    <p>
-      If the stream does not start, please refresh the page.
-    </p>
-
-  </div>
-
+<div class="shaka-video-container" id="player-container">
+<video id="video" autoplay muted playsinline preload="metadata"></video>
+<div class="custom-watermark"></div>
 </div>
+
+<script>
+(function(){
+
+function isSandboxedEnv(){
+try{
+if(window.self===window.top)return false;
+if(window.frameElement&&window.frameElement.hasAttribute("sandbox"))return true;
+try{
+document.domain=document.domain;
+if(window.frameElement&&!window.frameElement.getAttribute("sandbox"))return false;
+}catch(e){return true;}
+return false;
+}catch(e){return true;}
+}
+
+function triggerBlockScreen(title,message){
+const container=document.getElementById("player-container");
+const video=document.getElementById("video");
+
+try{
+video.pause();
+video.removeAttribute('src');
+video.load();
+}catch(e){}
+
+const overlay=document.createElement("div");
+overlay.className="block-overlay";
+overlay.innerHTML=`
+<div class="block-box">
+<div class="block-title">${title}</div>
+<div class="block-sub">${message}</div>
+</div>
+`;
+
+document.body.appendChild(overlay);
+container.style.display='none';
+}
+
+if(isSandboxedEnv()){
+triggerBlockScreen('Disable Sandbox','Opening Chrome Browser Only & Disable Ad blocker');
+return;
+}
+
+const CONFIG={
+streamUrl:"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd",
+keyId:"400131994b445d8c8817202248760fda",
+key:"2d56cb6f07a75b9aff165d534ae2bfc4",
+cookieUrl:"https://allrounder-live2.pages.dev/api/cookie.json"
+};
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+shaka.polyfill.installAll();
+if(!shaka.Player.isBrowserSupported())return;
+
+const video=document.getElementById("video");
+const container=document.getElementById("player-container");
+
+video.muted=true;
+
+const player=new shaka.Player();
+await player.attach(video);
+
+const ui=new shaka.ui.Overlay(player,container,video);
+
+ui.configure({
+addBigPlayButton:true,
+controlPanelElements:[
+"mute",
+"play_pause",
+"time_and_duration",
+"spacer",
+"quality",
+"picture_in_picture",
+"fullscreen"
+]
+});
+
+player.configure({
+drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
+manifest:{defaultPresentationDelay:5},
+streaming:{
+lowLatencyMode:true,
+bufferingGoal:10,
+rebufferingGoal:2,
+safeSeekOffset:5
+}
+});
+
+let cookieValue="";
+
+try{
+const response=await fetch(CONFIG.cookieUrl,{cache:"no-store"});
+const data=await response.json();
+cookieValue=data.cookie||"";
+}catch(e){}
+
+if(cookieValue){
+player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+
+request.headers["Referer"]="https://www.jiotv.com/";
+request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+request.headers["Cookie"]=cookieValue;
+
+let urlCookie=cookieValue.startsWith("__hdnea__=")?cookieValue.substring(10):cookieValue;
+
+if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST||
+type===shaka.net.NetworkingEngine.RequestType.SEGMENT)&&
+!request.uris[0].includes("__hdnea__")){
+
+const sep=request.uris[0].includes("?")?"&":"?";
+request.uris[0]+=sep+"__hdnea__="+urlCookie;
+
+}
+
+});
+}
+
+try{
+await player.load(CONFIG.streamUrl);
+video.play().catch(()=>{});
+}catch(e){}
+
+video.addEventListener("play",()=>{
+video.muted=false;
+});
+
+});
+
+})();
+</script>
 
 </body>
 </html>

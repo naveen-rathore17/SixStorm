@@ -157,31 +157,7 @@ app.get("/developer_tools_warning", (req, res) =>
 // STREAM PROXY
 // =====================================================
 
-app.get("/stream", async (req, res) => {
 
-  try {
-
-    const response = await axios({
-      method: "GET",
-      url: "https://mut001.myturn1.top:8088/live/starsports01/playlist.m3u8",
-      responseType: "stream",
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-        "Referer": "https://google.com"
-      }
-    });
-
-    res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
-
-    response.data.pipe(res);
-
-  } catch (err) {
-
-    res.send("Stream error");
-
-  }
-
-});
 
 
 // =====================================================
@@ -197,9 +173,14 @@ app.get("/live/starhindi", (req, res) => {
 });
 
 
+// app.get("/star_sport_1_live_HD_ipl", (req, res) => {
+
+//   res.redirect("https://allrounder-live2.pages.dev/star/modder-guy");
+
+// });
 app.get("/star_sport_1_live_HD_ipl", (req, res) => {
 
-  res.redirect("https://allrounder-live2.pages.dev/star/modder-guy");
+  res.render("sport")
 
 });
 
