@@ -1,133 +1,43 @@
 <%- include("partials/header") %>
 
-<body class="bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#111827] min-h-screen flex flex-col text-white">
+<body class="bg-black text-white">
 
-<!-- NAVBAR -->
+<div class="max-w-6xl mx-auto p-4">
 
-<nav class="bg-[#020617]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-xl">
-<div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+<h1 class="text-3xl font-bold text-center mb-4">
+🏏 Live Cricket Streaming
+</h1>
 
-<a href="/" class="text-2xl md:text-3xl font-bold">
-<span class="bg-gradient-to-r from-yellow-400 via-yellow-300 to-orange-500 bg-clip-text text-transparent">Six</span>
-<span class="text-white">Storm</span>
-</a>
+<div id="container" class="w-full aspect-video bg-black rounded-xl overflow-hidden">
 
-<div class="flex gap-3 md:gap-6 text-xs md:text-base font-semibold">
-<a href="/help" class="hover:text-red-400 transition">Help</a>
-<a href="/cricket-news" class="hover:text-red-400 transition">Updates</a>
-<a href="/contact-us" class="hover:text-red-400 transition">Contact</a>
-</div>
-</div>
-</nav>
-
-<main class="flex-grow">
-   <div class="text-center mt-8 px-4">
-        <h1 class="text-2xl md:text-5xl font-bold">
-          🏏 Live Cricket Streaming
-        </h1>
-        <p class="text-gray-400 mt-2 text-sm">Watch cricket match live in HD</p> 
-        <p class="text-xs text-gray-400 text-center mt-3">
-            Streams are provided by third-party sources. We do not host any
-            content.
-          </p>
-      </div>
-
-<div class="max-w-7xl mx-auto px-4 py-6">
-
-<div id="container" class="relative w-full aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-white/10">
-
-<!-- <div class="absolute top-1 left-1 md:top-4 md:left-4 z-20 bg-red-600 px-1 py-[2px] md:px-3 md:py-1 text-[9px] md:text-xs font-bold rounded flex items-center gap-[2px]">
-<span class="w-1 h-1 md:w-2 md:h-2 bg-white rounded-full animate-ping"></span>
-LIVE
-</div> -->
-
-<div class="absolute bottom-4 left-1 md:bottom-6 md:left-3 z-20 text-[9px] md:text-xs bg-black/60 px-1 py-[2px] md:px-2 md:py-1 rounded">
-<span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent font-bold">Six</span>
-Storm
-</div>
 <video
 id="video"
-class="w-full h-full object-contain"
+class="w-full h-full"
 autoplay
 muted
 playsinline
-preload="metadata"
 ></video>
 
 </div>
 
 </div>
 
-</main>
 
-<%- include("partials/footer") %>
-
-<script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"/>
-
-<style>
-
-.shaka-controls-container{
-opacity:1;
-transition:opacity .2s;
-background:linear-gradient(transparent,rgba(0,0,0,.6)) !important;
-}
-
-.shaka-seek-bar-container{
-height:6px !important;
-}
-
-.shaka-played{
-background:#ff0000 !important;
-}
-
-.shaka-buffered{
-background:#0066ff !important;
-}
-
-
-
-</style>
 
 <script>
 
-/* =========================
-ANTI EMBED PROTECTION
-========================= */
+const CONFIG = {
 
-if (window.self !== window.top) {
-
-document.body.innerHTML = `
-<div style="
-position:fixed;
-inset:0;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#000;
-color:white;
-font-size:22px;
-font-weight:bold;">
-Embedding not allowed
-</div>
-`;
-
-throw new Error("Embed blocked")
+streamUrl : "<%= streamUrl %>",
+keyId : "<%= keyId %>",
+key : "<%= key %>",
+cookieUrl : "<%= cookieUrl %>"
 
 }
 
-document.addEventListener("contextmenu",e=>e.preventDefault())
-
-const CONFIG={
-streamUrl:"<%= streamUrl %>",
-keyId:"<%= keyId %>",
-key:"<%= key %>",
-cookieUrl:"<%= cookieUrl %>"
-}
-
-document.addEventListener("DOMContentLoaded",async()=>{
+document.addEventListener("DOMContentLoaded", async () => {
 
 shaka.polyfill.installAll()
 
@@ -136,69 +46,55 @@ alert("Browser not supported")
 return
 }
 
-const video=document.getElementById("video")
-const player=new shaka.Player(video)
+const video = document.getElementById("video")
+
+const player = new shaka.Player()
+
+await player.attach(video)
 
 /* PLAYER CONFIG */
-/* PLAYER CONFIG (MOBILE OPTIMIZED) */
 
 player.configure({
-
-streaming:{
-
-bufferingGoal:10,        // fast start
-rebufferingGoal:2,       // quick recovery
-bufferBehind:20,
-
-lowLatencyMode:true,
-
-retryParameters:{
-maxAttempts:8,
-baseDelay:500,
-backoffFactor:1.5,
-timeout:20000
-}
-
-},
-
-abr:{
-enabled:true,
-
-defaultBandwidthEstimate:1500000, // mobile friendly
-
-switchInterval:2,   // fast quality switch
-
-bandwidthUpgradeTarget:0.65,
-bandwidthDowngradeTarget:0.95
-
-},
-
-manifest:{
-retryParameters:{
-maxAttempts:6,
-baseDelay:500,
-backoffFactor:2
-}
-},
 
 drm:{
 clearKeys:{
 [CONFIG.keyId]:CONFIG.key
 }
+},
+
+manifest:{
+defaultPresentationDelay:5
+},
+
+streaming:{
+lowLatencyMode:true,
+bufferingGoal:10,
+rebufferingGoal:2,
+safeSeekOffset:5
+},
+
+abr:{
+enabled:true,
+defaultBandwidthEstimate:1500000
 }
 
 })
 
+
 /* PLAYER UI */
 
-const ui=new shaka.ui.Overlay(
+const ui = new shaka.ui.Overlay(
+
 player,
 document.getElementById("container"),
 video
+
 )
 
 ui.configure({
+
 addBigPlayButton:true,
+
 controlPanelElements:[
 "play_pause",
 "time_and_duration",
@@ -206,42 +102,48 @@ controlPanelElements:[
 "mute",
 "volume",
 "quality",
-"playback_rate",
 "picture_in_picture",
 "fullscreen"
 ]
-})
-/* MOBILE TAP FIX */
 
-const controls = ui.getControls();
-
-video.addEventListener("touchstart",()=>{
-controls.setEnabled(true)
 })
+
 
 /* COOKIE SYSTEM */
 
 let cookieValue=""
 
 async function loadCookie(){
+
 try{
-const res=await fetch(CONFIG.cookieUrl,{cache:"no-store"})
-const data=await res.json()
-cookieValue=data.cookie || ""
+
+const res = await fetch(CONFIG.cookieUrl,{cache:"no-store"})
+
+const data = await res.json()
+
+cookieValue = data.cookie || ""
+
 }catch(e){
-console.log("cookie error")
+
+console.log("cookie load error")
+
 }
+
 }
 
 await loadCookie()
+
 setInterval(loadCookie,300000)
+
+
 
 /* REQUEST HEADERS */
 
 player.getNetworkingEngine().registerRequestFilter((type,request)=>{
 
 request.headers["Referer"]="https://www.jiotv.com/"
-request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13)"
+
+request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6"
 
 if(cookieValue){
 
@@ -268,59 +170,55 @@ request.uris[0]+=sep+"__hdnea__="+urlCookie
 
 })
 
-/* AUTO STREAM RECOVERY */
 
-let retryInterval=null
-let isLoading=false
+
+/* STREAM START */
+
+let retryTimer=null
 
 async function startStream(){
 
-if(isLoading) return
-isLoading=true
-
 try{
 
-console.log("Trying to start stream...")
-
-if(player){
-await player.unload()
-}
+console.log("Loading stream...")
 
 await player.load(CONFIG.streamUrl)
 
-console.log("Stream started successfully")
+video.play().catch(()=>{})
 
-if(retryInterval){
-clearInterval(retryInterval)
-retryInterval=null
+console.log("Stream started")
+
+if(retryTimer){
+
+clearInterval(retryTimer)
+
+retryTimer=null
+
 }
 
 }catch(e){
 
-console.log("Stream offline, retrying...")
+console.log("Stream error")
 
-if(!retryInterval){
+if(!retryTimer){
 
-retryInterval=setInterval(async()=>{
+retryTimer=setInterval(async()=>{
 
 try{
 
-console.log("Retrying stream...")
-
-if(player){
-await player.unload()
-}
-
 await player.load(CONFIG.streamUrl)
 
-console.log("Stream started!")
+video.play().catch(()=>{})
 
-clearInterval(retryInterval)
-retryInterval=null
+console.log("Stream recovered")
+
+clearInterval(retryTimer)
+
+retryTimer=null
 
 }catch(err){
 
-console.log("Still offline...")
+console.log("Retrying...")
 
 }
 
@@ -330,211 +228,25 @@ console.log("Still offline...")
 
 }
 
-isLoading=false
-
 }
+
+
 
 player.addEventListener("error",()=>{
+
+console.log("Player error restarting stream")
+
 startStream()
+
 })
+
+
 
 startStream()
 
 })
 
 </script>
-<!-- Inspect Devtools Disble -->
- <script>
-
-/* =========================
-RIGHT CLICK BLOCK
-========================= */
-
-document.addEventListener("contextmenu", function(e){
-  e.preventDefault();
-});
-
-
-/* =========================
-KEYBOARD SHORTCUT BLOCK
-========================= */
-
-document.addEventListener("keydown", function(e){
-
-  const key = e.key.toLowerCase();
-
-  // F12
-  if(e.key === "F12"){
-    e.preventDefault();
-  }
-
-  // Ctrl+U
-  if(e.ctrlKey && key === "u"){
-    e.preventDefault();
-  }
-
-  // Ctrl+Shift+I
-  if(e.ctrlKey && e.shiftKey && key === "i"){
-    e.preventDefault();
-  }
-
-  // Ctrl+Shift+J
-  if(e.ctrlKey && e.shiftKey && key === "j"){
-    e.preventDefault();
-  }
-
-  // Ctrl+Shift+C
-  if(e.ctrlKey && e.shiftKey && key === "c"){
-    e.preventDefault();
-  }
-
-});
-
-/* =========================
-DEVTOOLS DETECT + REDIRECT
-========================= */
-
-(function(){
-
-const REDIRECT_URL = "https://sixstorm-live.onrender.com/developer_tools_warning";
-
-let devtoolsOpen = false;
-
-/* size detection */
-
-setInterval(function(){
-
-const width = window.outerWidth - window.innerWidth > 160;
-const height = window.outerHeight - window.innerHeight > 160;
-
-if(width || height){
-
-triggerRedirect();
-
-}
-
-},2000);
-
-
-/* debugger timing detection */
-
-setInterval(function(){
-
-const start = new Date().getTime();
-
-debugger;
-
-const end = new Date().getTime();
-
-if(end - start > 100){
-
-triggerRedirect();
-
-}
-
-},2000);
-
-
-/* redirect function */
-
-function triggerRedirect(){
-
-if(devtoolsOpen) return;
-
-devtoolsOpen = true;
-
-document.body.innerHTML = `
-<div style="
-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-background:black;
-color:white;
-font-size:24px;
-font-weight:bold;">
-⚠ Developer Tools Detected
-</div>
-`;
-
-setTimeout(()=>{
-
-window.location.replace(REDIRECT_URL);
-
-},800);
-
-}
-
-})();
-
-
-
-
-/* =========================
-DEBUGGER TRAP
-========================= */
-
-(function(){
-  function trap(){
-    debugger;
-    setTimeout(trap,2000);
-  }
-  trap();
-})();
-
-
-/* =========================
-CONSOLE BLOCK
-========================= */
-
-console.log = function(){};
-console.warn = function(){};
-console.error = function(){};
-
-</script>
-
-
-
-<!-- Denied Direct Player Streaming -->
-
- <!-- <script>
-if(!document.referrer.includes("https://sixstorm-live.onrender.com")) {
-
-document.body.innerHTML = `
-<div class="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 px-4">
-  <div class="max-w-md w-full bg-black/70 backdrop-blur-lg border border-red-600 rounded-2xl p-8 shadow-2xl text-center animate-fadeIn">
-    <h1 class="text-3xl font-extrabold text-red-500 mb-4">⚠ Unauthorized Access</h1>
-    <p class="text-white text-base mb-6 leading-relaxed">
-      You are attempting to access the live stream directly.<br>
-      This is considered <span class="font-bold text-red-400">illegal activity</span> and may result in legal action.<br><br>
-      Please visit the official <span class="font-bold text-yellow-400">SixStorm</span> homepage and click <span class="font-bold text-green-400">Watch Now</span> to access the stream.
-    </p>
-    <a href="https://sixstorm-live.onrender.com"
-       class="inline-block bg-gradient-to-r from-red-500 via-orange-500 to-yellow-400 text-black font-bold py-3 px-6 rounded-xl shadow-lg hover:scale-105 hover:shadow-2xl transition-transform">
-       🏠 Go To Home
-    </a>
-  </div>
-</div>
-
-<style>
-@keyframes fadeIn {
-  0% { opacity: 0; transform: translateY(-20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-.animate-fadeIn {
-  animation: fadeIn 0.8s ease-out forwards;
-}
-@media (max-width: 480px) {
-  h1 { font-size: 1.8rem; }
-  p { font-size: 0.9rem; }
-  a { padding: 0.75rem 1.5rem; font-size: 0.9rem; }
-}
-</style>
-`;
-
-throw new Error("Direct access blocked");
-}
-</script>  -->
 
 </body>
-</html>  
+</html>
