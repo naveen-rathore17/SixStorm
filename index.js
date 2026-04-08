@@ -11,20 +11,19 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 
-const keepAlive = require("./keepAlive");
-const { title } = require("process");
-keepAlive();
+// const keepAlive = require("./keepAlive");
+// keepAlive();
 
 
 // =====================================================
 // CACHE SYSTEM
 // =====================================================
 
-// Match card cache
 let cachedMatches = null;
 let lastMatchFetchTime = 0;
 
-const MATCH_CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+const MATCH_CACHE_DURATION = 10 * 60 * 1000;
+
 
 // =====================================================
 // SERVER SETTINGS
@@ -40,15 +39,12 @@ app.set("view cache", false);
 // SECURITY
 // =====================================================
 
-// Rate limit (basic DDoS protection)
-
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100
+  max: 500
 });
 
 app.use(limiter);
-
 
 
 app.use(
@@ -83,11 +79,14 @@ app.use(
       mediaSrc: [
         "'self'",
         "https:",
+        "http:",
         "blob:"
       ]
     }
   })
 );
+
+
 // =====================================================
 // DISABLE BROWSER CACHE
 // =====================================================
@@ -116,13 +115,15 @@ app.use(
   })
 );
 
+
 // =====================================================
-// ROUTES (STATIC PAGES)
+// STATIC PAGES
 // =====================================================
 
 app.get("/help", (req, res) =>
   res.render("help", { title: "Help | SixStorm" })
 );
+
 app.get("/issue-message", (req, res) =>
   res.render("warn", { title: "Warning | SixStorm" })
 );
@@ -146,18 +147,23 @@ app.get("/about-us", (req, res) =>
 app.get("/cricket-news", (req, res) =>
   res.render("news", { title: "Cricket News | SixStorm" })
 );
+
 app.get("/developer_tools_warning", (req, res) =>
-  res.render("dev-tools", { title: "⚠ Illegal Activity Detected| SixStorm" })
+  res.render("dev-tools", { title: "⚠ Illegal Activity Detected | SixStorm" })
 );
 
 
+// =====================================================
+// STREAM PROXY
+// =====================================================
+
 app.get("/stream", async (req, res) => {
-  const url = "https://mut001.myturn1.top:8088/live/starsports01/playlist.m3u8";
 
   try {
+
     const response = await axios({
       method: "GET",
-      url: url,
+      url: "https://mut001.myturn1.top:8088/live/starsports01/playlist.m3u8",
       responseType: "stream",
       headers: {
         "User-Agent": "Mozilla/5.0",
@@ -170,66 +176,76 @@ app.get("/stream", async (req, res) => {
     response.data.pipe(res);
 
   } catch (err) {
+
     res.send("Stream error");
+
   }
-});
-
-app.get("/live/starhindi", (req, res) => {
-  res.render("redirect",{
-    title:"SixStorm | IPL-2026"
-  });
 
 });
-
-/* Home */
 
 
 // =====================================================
 // STREAM PAGE
 // =====================================================
-app.get("/stream", async (req,res)=>{
-  const response = await fetch("https://live.khantv.pk/update/?id=star_sports3")
-  const html = await response.text()
-  res.send(html)
-}) 
 
-app.get("/star_sport_1_live_HD_ipl", (req, res) => {
+app.get("/live/starhindi", (req, res) => {
 
-  res.redirect("https://allrounder-live2.pages.dev/star/modder-guy")
+  res.render("redirect", {
+    title: "SixStorm | IPL-2026"
+  });
 
 });
 
+
+app.get("/star_sport_1_live_HD_ipl", (req, res) => {
+
+  res.redirect("https://allrounder-live2.pages.dev/star/modder-guy");
+
+});
+
+
 app.get("/star_sport_live_Hd", (req, res) => {
+
   res.render("star-sport", {
-    title: "IPL Live🔴",
+
+    title: "IPL Live 🔴",
+
     streamUrl: process.env.STREAM_URL,
     keyId: process.env.KEY_ID,
     key: process.env.KEY_VALUE,
     cookieUrl: process.env.COOKIE_URL
+
   });
+
 });
 
+
 // =====================================================
-// HEALTH CHECK ROUTES
+// HEALTH CHECK
 // =====================================================
 
 app.get("/ping", (req, res) => {
+
   res.status(200).send("Server is alive");
+
 });
+
 
 app.get("/health", (req, res) => {
 
   res.status(200).json({
+
     status: "OK",
     uptime: process.uptime(),
     message: "Server running"
+
   });
 
 });
 
 
 // =====================================================
-// FETCH MATCHES FROM API
+// FETCH MATCHES
 // =====================================================
 
 async function fetchMatches() {
@@ -264,8 +280,6 @@ async function fetchMatches() {
       const matchNumber =
         match.name.match(/\d+/)?.[0] || "";
 
-      // Only upcoming matches
-
       if (matchTime > now && !match.matchStarted) {
 
         matches.push({
@@ -298,13 +312,10 @@ async function fetchMatches() {
 
     });
 
-    // Sort upcoming matches
-
     matches.sort((a, b) => a.startDate - b.startDate);
 
     if (matches.length > 0) {
 
-      // Return next match
       return [matches[0]];
 
     }
@@ -323,19 +334,16 @@ async function fetchMatches() {
 
 
 // =====================================================
-// MATCH CACHE SYSTEM
+// CACHE SYSTEM
 // =====================================================
 
 async function getMatches() {
 
   const now = Date.now();
 
-  // Serve cached matches
-
   if (cachedMatches && now - lastMatchFetchTime < MATCH_CACHE_DURATION) {
 
     console.log("Serving matches from CACHE");
-
     return cachedMatches;
 
   }
@@ -351,8 +359,6 @@ async function getMatches() {
 
   }
 
-  // Manual fallback match
-
   console.log("Using MANUAL MATCH");
 
   return [
@@ -360,19 +366,13 @@ async function getMatches() {
       matchDesc: "Match-9",
       team1: "GT",
       team2: "RR",
-
       team1Img:
         "https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Gujarat_Titans_Logo.svg/250px-Gujarat_Titans_Logo.svg.png",
-
       team2Img:
         "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/This_is_the_logo_for_Rajasthan_Royals.svg/250px-This_is_the_logo_for_Rajasthan_Royals.svg.png",
-
       venue: "Narendra Modi Stadium",
-
       city: "Ahmedabad",
-
       date: "4 April 2026 7:30 PM",
-
       startDate:
         new Date("2026-04-04T19:30:00+05:30").getTime()
     }
@@ -381,10 +381,8 @@ async function getMatches() {
 }
 
 
-
-
 // =====================================================
-// HOME ROUTE
+// HOME
 // =====================================================
 
 app.get("/", async (req, res) => {
@@ -392,13 +390,13 @@ app.get("/", async (req, res) => {
   const matches = await getMatches();
 
   res.render("Home", {
+
     matches,
     title: "SixStorm LIVE"
+
   });
 
 });
-
-
 
 
 // =====================================================
