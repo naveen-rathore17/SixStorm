@@ -11,6 +11,7 @@ const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 
+
 // const keepAlive = require("./keepAlive");
 // keepAlive();
 
@@ -355,18 +356,18 @@ async function getMatches() {
 
   return [
     {
-      matchDesc: "Match-9",
-      team1: "GT",
-      team2: "RR",
+      matchDesc: "Match-15",
+      team1: "KKR",
+      team2: "LSG",
       team1Img:
-        "https://upload.wikimedia.org/wikipedia/en/thumb/0/09/Gujarat_Titans_Logo.svg/250px-Gujarat_Titans_Logo.svg.png",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjOY3jUusu_WMuNrhL_BxXnwPKoqctWAWY1g&s",
       team2Img:
-        "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/This_is_the_logo_for_Rajasthan_Royals.svg/250px-This_is_the_logo_for_Rajasthan_Royals.svg.png",
-      venue: "Narendra Modi Stadium",
-      city: "Ahmedabad",
-      date: "4 April 2026 7:30 PM",
+        "https://pbs.twimg.com/profile_images/1206105594899263488/ch1zedIl_400x400.jpg",
+      venue: "Eden Gardens",
+      city: "Kolakata",
+      date: "9 April 2026 7:30 PM",
       startDate:
-        new Date("2026-04-04T19:30:00+05:30").getTime()
+        new Date("2026-04-09T19:30:00+05:30").getTime()
     }
   ];
 
@@ -391,10 +392,83 @@ app.get("/", async (req, res) => {
 });
 
 
+// app.get("/points", async (req, res) => {
+//   try {
+
+//     // POINTS TABLE
+//     const pointsRes = await axios.get(
+//       `https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
+//     );
+
+//     let teams = pointsRes.data?.data || [];
+
+//     teams.forEach(team => {
+//       team.points = (team.wins || 0) * 2;
+//       team.nrr = team.nrr || 0;
+//     });
+
+//     teams.sort((a, b) => {
+//       if (b.points !== a.points) return b.points - a.points;
+//       if (b.wins !== a.wins) return b.wins - a.wins;
+//       return b.nrr - a.nrr;
+//     });
+
+//     res.render("points", { teams});
+
+//   } catch (err) {
+//     console.error(err);
+//     res.send("Error loading data");
+//   }
+// });
+
+
+
+
 // =====================================================
 // SERVER START
 // =====================================================
+let cachedTeams = null;
+let lastFetchTime = 0;
 
+const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
+
+app.get("/points", async (req, res) => {
+  try {
+
+    // Check cache
+    const now = Date.now();
+
+    if (!cachedTeams || now - lastFetchTime > CACHE_TIME) {
+
+      const pointsRes = await axios.get(
+        `https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
+      );
+
+      let teams = pointsRes.data?.data || [];
+
+      teams.forEach(team => {
+        team.points = (team.wins || 0) * 2;
+        team.nrr = team.nrr || 0;
+      });
+
+      teams.sort((a, b) => {
+        if (b.points !== a.points) return b.points - a.points;
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        return b.nrr - a.nrr;
+      });
+
+      // save cache
+      cachedTeams = teams;
+      lastFetchTime = now;
+    }
+
+    res.render("points", { teams: cachedTeams });
+
+  } catch (err) {
+    console.error(err);
+    res.send("Error loading data");
+  }
+});
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {

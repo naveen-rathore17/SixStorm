@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>IPL 2026 Points Table</title>
+  <link rel="icon" type="image/png" href="/images/favicon2.png" />
+    <link rel="shortcut icon" href="/images/favicon2.png" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://pl29102522.profitablecpmratenetwork.com/3c/b2/8d/3cb28d1f2936aa5def15aaacf207b393.js"></script>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+font-family:'Poppins',sans-serif;
+}
+</style>
+
+</head>
+
+<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white">
+<div class="max-w-6xl mx-auto px-4 py-10">
+
+<h1 class="text-4xl md:text-5xl font-bold text-center mb-2">
+🏏 IPL 2026
+</h1>
+
+<p class="text-center text-gray-400 mb-10 text-lg">
+Points Table
+</p>
+
+<div class="overflow-x-auto rounded-xl shadow-2xl">
+
+<table class="w-full text-center bg-gray-900 rounded-xl overflow-hidden">
+
+<thead class="bg-red-600 text-white">
+
+<tr>
+<th class="p-4">#</th>
+<th class="p-4 text-left">Team</th>
+<th class="p-4">M</th>
+<th class="p-4">W</th>
+<th class="p-4">L</th>
+<th class="p-4">Pts</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+<% teams.forEach((team, index) => { %>
+
+<tr class="border-b border-gray-800 hover:bg-gray-800 transition">
+
+<td class="p-4 font-bold text-yellow-400">
+<%= index + 1 %>
+</td>
+
+<td class="p-4 flex items-center gap-3 justify-start">
+
+<img src="<%= team.img %>" 
+class="w-8 h-8 rounded-full">
+
+<span class="font-semibold">
+<%= team.teamname %>
+</span>
+
+</td>
+
+<td class="p-4"><%= team.matches %></td>
+<td class="p-4 text-green-400 font-semibold"><%= team.wins %></td>
+<td class="p-4 text-red-400"><%= team.loss %></td>
+
+<td class="p-4 font-bold text-yellow-400 text-lg">
+<%= team.points %>
+</td>
+
+</tr>
+
+<% }) %>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="max-w-6xl mx-auto px-4 py-10">
+
+<h2 class="text-3xl md:text-4xl font-bold text-yellow-400 mb-8 text-center">
+🏏 Latest IPL Match Results
+</h2>
+
+<div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6">
+
+<% matches.forEach(match => { %>
+
+<div class="bg-gray-900 rounded-xl p-6 shadow-lg hover:bg-gray-800 transition">
+
+<h3 class="text-lg font-semibold mb-2">
+<%= match.name %>
+</h3>
+
+<p class="text-gray-400 text-sm mb-3">
+📍 <%= match.venue %>
+</p>
+
+<div class="flex items-center justify-between my-4">
+
+<% if(match.teamInfo && match.teamInfo.length >= 2){ %>
+
+<div class="flex items-center gap-2">
+<img src="<%= match.teamInfo[0].img %>" class="w-8 h-8">
+<span class="font-semibold">
+<%= match.teamInfo[0].shortname %>
+</span>
+</div>
+
+<span class="text-gray-400 font-bold">vs</span>
+
+<div class="flex items-center gap-2">
+<img src="<%= match.teamInfo[1].img %>" class="w-8 h-8">
+<span class="font-semibold">
+<%= match.teamInfo[1].shortname %>
+</span>
+</div>
+
+<% } %>
+
+</div>
+
+<div class="text-sm text-gray-300 space-y-1">
+
+<% if(match.score && match.score.length > 0){ %>
+
+<p>
+<strong>
+<%= match.score[0].r %>/<%= match.score[0].w %>
+</strong>
+(<%= match.score[0].o %> ov)
+</p>
+
+<% if(match.score[1]){ %>
+
+<p>
+<strong>
+<%= match.score[1].r %>/<%= match.score[1].w %>
+</strong>
+(<%= match.score[1].o %> ov)
+</p>
+
+<% } %>
+
+<% } else { %>
+
+<p class="text-gray-500">Score not available</p>
+
+<% } %>
+
+</div>
+
+<p class="text-green-400 font-semibold mt-4">
+<%= match.status %>
+</p>
+
+<p class="text-xs text-gray-500 mt-2">
+📅 <%= match.date %>
+</p>
+
+</div>
+
+<% }) %>
+
+</div>
+
+</div>
+
+
+
+
+<section class="max-w-7xl mx-auto px-4 py-10">
+
+<h1 class="text-4xl font-bold text-yellow-400 text-center mb-12">
+Cricket News Updates
+</h1>
+
+<div class="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8 items-start">
+
+<!-- NEWS CARD 1 -->
+<div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition flex flex-col">
+<img src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_wide_w_320/lsci/db/PICTURES/CMS/414900/414998.6.jpg" class="w-full h-52 object-cover">
+
+<div class="p-5 flex flex-col gap-3">
+<h2 class="text-xl font-semibold text-white">
+Cummins heads back home for final scan on injured back
+</h2>
+
+<p class="text-gray-400 text-sm leading-relaxed">
+ESPNcricinfo understands that the scan is a scheduled one, to be conducted with Cricket Australia (CA) overseeing it, and that Cummins left India at the end of SRH's last game, against Kolkata Knight Riders in Kolkata on Thursday. He is expected to rejoin the squad on April 17 if cleared by CA.
+</p>
+
+<p class="text-xs text-gray-500">Posted: 4 April 2026</p>
+</div>
+</div>
+
+<!-- NEWS CARD 2 -->
+<div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition flex flex-col">
+<img src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_wide_w_320/lsci/db/PICTURES/CMS/317800/317861.6.jpg" class="w-full h-52 object-cover">
+
+<div class="p-5 flex flex-col gap-3">
+<h2 class="text-xl font-semibold text-white">
+Rashid Khan cuts down on Tests, looking to play one a year
+</h2>
+
+<p class="text-gray-400 text-sm leading-relaxed">
+Rashid Khan is having to cut down on his appearances in Test cricket in order to prolong his Afghanistan career. The 27-year-old legspinner, who captains his country in T20Is, was told to step back from the red-ball game after his back injury in 2023 and is now functioning on a one-Test-a-year system.
+</p>
+
+<p class="text-xs text-gray-500">Posted: April 2026</p>
+</div>
+</div>
+
+<!-- NEWS CARD 3 -->
+<div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition flex flex-col">
+<img src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_wide_w_1280,q_70/esci/media/motion/2026/0408/dm_260408_INET_CRIC_ipl26_m14-kl_nonbranded_global/dm_260408_INET_CRIC_ipl26_m14-kl_nonbranded_global.jpg" class="w-full h-52 object-cover">
+
+<div class="p-5 flex flex-col gap-3">
+<h2 class="text-xl font-semibold text-white">
+Rayudu: Rahul's challenge is the strategy he comes out to bat with
+</h2>
+
+<p class="text-gray-400 text-sm leading-relaxed">
+KL Rahul has the ability to hit a boundary off any delivery, but it's his mindset that has always been his battle, said Ambati Rayudu after the batter made a valiant 92 off 52 balls in Delhi Capitals' defeat to Gujarat Titans.
+</p>
+
+<p class="text-xs text-gray-500">Posted: April 2026</p>
+</div>
+</div>
+
+<!-- NEWS CARD 4 -->
+<div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition flex flex-col">
+<img src="https://img1.hscicdn.com/image/upload/f_auto,t_ds_wide_w_1280,q_70/esci/media/motion/2026/0408/dm_260408_INET_CRIC_ipl26_m14-lastball_nonbranded_global/dm_260408_INET_CRIC_ipl26_m14-lastball_nonbranded_global.jpg" class="w-full h-52 object-cover">
+
+<div class="p-5 flex flex-col gap-3">
+<h2 class="text-xl font-semibold text-white">
+Prasidh trumps Miller in last-ball finish as GT clinch thriller
+</h2>
+
+<p class="text-gray-400 text-sm leading-relaxed">
+Gujarat Titans beat Delhi Capitals by one run in a thrilling IPL 2026 match. Prasidh Krishna bowled a slower bouncer on the final ball which Miller missed and Jos Buttler ran out Kuldeep Yadav to seal the victory.
+</p>
+
+<p class="text-xs text-gray-500">Posted: April 2026</p>
+</div>
+</div>
+
+<!-- NEWS CARD 5 -->
+<div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition flex flex-col">
+<img src="https://c.ndtvimg.com/2026-04/7s74q15c_sameer-rizvi-bcci_625x300_04_April_26.jpg?im=FeatureCrop,algorithm=dnn,width=806,height=605" class="w-full h-52 object-cover">
+
+<div class="p-5 flex flex-col gap-3">
+<h2 class="text-xl font-semibold text-white">
+DC vs MI LIVE Score, IPL 2026
+</h2>
+
+<p class="text-gray-400 text-sm leading-relaxed">
+Delhi Capitals have lost their third wicket in the chase of 163 against Mumbai Indians as Mitchell Santner dismissed Pathum Nissanka for 44 while Sameer Rizvi brought up his half-century.
+</p>
+
+<p class="text-xs text-gray-500">Posted: April 2026</p>
+</div>
+</div>
+
+<!-- NEWS CARD 6 -->
+<div class="bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:scale-105 transition flex flex-col">
+<img src="https://c.ndtvimg.com/2026-04/s66j093_fleming-and-dhoni-afp_625x300_04_April_26.jpg?im=FeatureCrop,algorithm=dnn,width=1200,height=738" class="w-full h-52 object-cover">
+
+<div class="p-5 flex flex-col gap-3">
+<h2 class="text-xl font-semibold text-white">
+With MS Dhoni Out, CSK Coach Says: "Don't Think There's A Thing Called Finishers"
+</h2>
+
+<p class="text-gray-400 text-sm leading-relaxed">
+CSK have overhauled their squad, with the batting unit dominated by top-order specialists, leaving gaps in the middle and lower order, particularly in the finisher's role.
+</p>
+
+<p class="text-xs text-gray-500">Posted: April 2026</p>
+</div>
+</div>
+
+</div>
+
+</section>
+</div>
+
+
+<%- include('partials/footer') %>
+</body>
+</html>
