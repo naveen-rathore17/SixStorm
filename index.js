@@ -56,7 +56,8 @@ app.use(
         "'unsafe-inline'",
         "https://cdn.tailwindcss.com",
         "https://cdn.jsdelivr.net",
-        "https://*.profitablecpmratenetwork.com"
+        "https://*.profitablecpmratenetwork.com",
+        "https://preferencenail.com"
       ],
 
       styleSrc: [
