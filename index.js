@@ -46,7 +46,6 @@ const limiter = rateLimit({
 
 app.use(limiter);
 
-
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
@@ -56,7 +55,8 @@ app.use(
         "'self'",
         "'unsafe-inline'",
         "https://cdn.tailwindcss.com",
-        "https://cdn.jsdelivr.net"
+        "https://cdn.jsdelivr.net",
+        "https://*.profitablecpmratenetwork.com"
       ],
 
       styleSrc: [
@@ -73,7 +73,8 @@ app.use(
 
       connectSrc: [
         "'self'",
-        "https:"
+        "https:",
+        "https://*.profitablecpmratenetwork.com"
       ],
 
       mediaSrc: [
@@ -85,8 +86,6 @@ app.use(
     }
   })
 );
-
-
 // =====================================================
 // DISABLE BROWSER CACHE
 // =====================================================
