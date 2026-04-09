@@ -49,6 +49,7 @@ app.use(limiter);
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
+
       defaultSrc: ["'self'"],
 
       scriptSrc: [
@@ -56,7 +57,10 @@ app.use(
         "'unsafe-inline'",
         "https://cdn.tailwindcss.com",
         "https://cdn.jsdelivr.net",
+
+        // Adsterra
         "https://*.profitablecpmratenetwork.com",
+        "https://*.adsterra.com",
         "https://preferencenail.com"
       ],
 
@@ -75,7 +79,7 @@ app.use(
       connectSrc: [
         "'self'",
         "https:",
-        "https://*.profitablecpmratenetwork.com"
+        "wss:"
       ],
 
       mediaSrc: [
@@ -83,7 +87,14 @@ app.use(
         "https:",
         "http:",
         "blob:"
+      ],
+
+      frameSrc: [
+        "'self'",
+        "https:",
+        "blob:"
       ]
+
     }
   })
 );
