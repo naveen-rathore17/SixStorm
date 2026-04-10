@@ -427,48 +427,35 @@ app.get("/", async (req, res) => {
 // =====================================================
 // SERVER START
 // =====================================================
-let cachedTeams = null;
-let lastFetchTime = 0;
-
-const CACHE_TIME = 5 * 60 * 1000; // 5 minutes
 
 app.get("/points", async (req, res) => {
   try {
 
-    // Check cache
-    const now = Date.now();
+    // POINTS TABLE API
+    const pointsRes = await axios.get(
+      `https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
+    );
 
-    if (!cachedTeams || now - lastFetchTime > CACHE_TIME) {
+    let teams = pointsRes.data?.data || [];
 
-      const pointsRes = await axios.get(
-        `https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
-      );
+    teams.forEach(team => {
+      team.points = (team.wins || 0) * 2;
+      team.nrr = team.nrr || 0;
+    });
 
-      let teams = pointsRes.data?.data || [];
-
-      teams.forEach(team => {
-        team.points = (team.wins || 0) * 2;
-        team.nrr = team.nrr || 0;
-      });
-
-      teams.sort((a, b) => {
-        if (b.points !== a.points) return b.points - a.points;
-        if (b.wins !== a.wins) return b.wins - a.wins;
-        return b.nrr - a.nrr;
-      });
-
-      // save cache
-      cachedTeams = teams;
-      lastFetchTime = now;
-    }
-
-    res.render("points", { teams: cachedTeams });
+    teams.sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points;
+      if (b.wins !== a.wins) return b.wins - a.wins;
+      return b.nrr - a.nrr;
+    }); 
+    res.render("points", { teams});
 
   } catch (err) {
     console.error(err);
     res.send("Error loading data");
   }
 });
+
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
