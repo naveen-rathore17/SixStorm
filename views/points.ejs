@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>IPL 2026 Points Table</title>
-  <link rel="icon" type="image/png" href="/images/favicon2.png" />
-    <link rel="shortcut icon" href="/images/favicon2.png" />
+
+<link rel="icon" type="image/png" href="/images/favicon2.png"/>
+<link rel="shortcut icon" href="/images/favicon2.png"/>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://pl29102522.profitablecpmratenetwork.com/3c/b2/8d/3cb28d1f2936aa5def15aaacf207b393.js"></script>
-
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -24,6 +24,7 @@ font-family:'Poppins',sans-serif;
 </head>
 
 <body class="bg-gradient-to-br from-black via-gray-900 to-black text-white">
+
 <div class="max-w-6xl mx-auto px-4 py-10">
 
 <h1 class="text-4xl md:text-5xl font-bold text-center mb-2">
@@ -53,6 +54,16 @@ Points Table
 
 <tbody>
 
+<% if (!teams || teams.length === 0 || teams[0].message) { %>
+
+<tr>
+<td colspan="6" class="p-8 text-center text-gray-300 text-lg">
+<%= teams && teams[0] ? teams[0].message : "Points table will be available shortly. Our team is updating the latest standings." %>
+</td>
+</tr>
+
+<% } else { %>
+
 <% teams.forEach((team, index) => { %>
 
 <tr class="border-b border-gray-800 hover:bg-gray-800 transition">
@@ -63,8 +74,7 @@ Points Table
 
 <td class="p-4 flex items-center gap-3 justify-start">
 
-<img src="<%= team.img %>" 
-class="w-8 h-8 rounded-full">
+<img src="<%= team.img %>" class="w-8 h-8 rounded-full">
 
 <span class="font-semibold">
 <%= team.teamname %>
@@ -73,8 +83,14 @@ class="w-8 h-8 rounded-full">
 </td>
 
 <td class="p-4"><%= team.matches %></td>
-<td class="p-4 text-green-400 font-semibold"><%= team.wins %></td>
-<td class="p-4 text-red-400"><%= team.loss %></td>
+
+<td class="p-4 text-green-400 font-semibold">
+<%= team.wins %>
+</td>
+
+<td class="p-4 text-red-400">
+<%= team.loss %>
+</td>
 
 <td class="p-4 font-bold text-yellow-400 text-lg">
 <%= team.points %>
@@ -84,12 +100,13 @@ class="w-8 h-8 rounded-full">
 
 <% }) %>
 
+<% } %>
+
 </tbody>
 
 </table>
 
 </div>
-
 
 
 <section class="max-w-7xl mx-auto px-4 py-10">

@@ -317,7 +317,11 @@ return teams;
 
 }catch(err){
 console.log("Points API failed");
-return cachedPoints || [];
+return cachedPoints || [
+  {
+     message: "The points table is temporarily unavailable while we update the latest standings. Our team is working on it and it will be available very soon. Thank you for your patience."
+  }
+];
 }
 
 }
