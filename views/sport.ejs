@@ -1,292 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SixStorm Live</title>
-<link rel="icon" type="image/png" href="/images/favicon2.png" />
-<link rel="shortcut icon" href="/images/favicon2.png" />
-<meta name="referrer" content="no-referrer">
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"/>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SixStorm Live</title>
+    <link rel="icon" type="image/png" href="/images/favicon2.png" />
+    <link rel="shortcut icon" href="/images/favicon2.png" />
+    <meta name="referrer" content="no-referrer" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"
+    />
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{
-width:100%;
-height:100%;
-background:#000;
-overflow:hidden;
-font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif
-}
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        background: #000;
+        overflow-x: hidden;
+      }
 
-.shaka-video-container{
-position:fixed;
-inset:0;
-background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+      .shaka-video-container {
+        position: fixed;
+        inset: 0;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+      }
 
-video{
-width:100%;
-height:100%;
-object-fit:contain;
-background:#000;
-}
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+      }
 
-/* SixStorm Title */
-.site-title{
-position:fixed;
-top:15px;
-left:15px;
-z-index:50;
-font-size:18px;
-font-weight:700;
-color:white;
-letter-spacing:1px;
-}
+      /* SixStorm Title */
+      .site-title {
+        position: fixed;
+        top: 15px;
+        left: 15px;
+        z-index: 50;
+        font-size: 18px;
+        font-weight: 700;
+        color: white;
+        letter-spacing: 1px;
+      }
 
-/* LIVE Badge */
-.live-badge{
-position:fixed;
-top:80px;
-left:30px;
-z-index:50;
-background:red;
-color:white;
-font-weight:bold;
-font-size:11px;
-padding:2px 10px;
-border-radius:6px;
-animation:pulse 1.5s infinite;
-}
+      /* LIVE Badge */
+      .live-badge {
+        position: fixed;
+        top: 70px;
+        left: 30px;
+        z-index: 50;
+        background: red;
+        color: white;
+        font-weight: bold;
+        font-size: 11px;
+        padding: 2px 10px;
+        border-radius: 6px;
+        animation: pulse 1.5s infinite;
+      }
 
-@keyframes pulse{
-0%{opacity:1}
-50%{opacity:.5}
-100%{opacity:1}
-}
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
 
-/* watermark */
-.custom-watermark{
-position:absolute;
-z-index:40;
-pointer-events:none;
-top:65%;
-left:6%;
-transform:translateY(-50%);
-font-size:11px;
-font-weight:600;
-color:rgba(255,255,255,0.12);
-}
+      /* watermark */
+      .custom-watermark {
+        position: absolute;
+        z-index: 40;
+        pointer-events: none;
+        top: 65%;
+        left: 6%;
+        transform: translateY(-50%);
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.12);
+      }
 
-/* blocker */
-.block-overlay{
-position:fixed;
-inset:0;
-z-index:99999;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#000;
-text-align:center;
-}
+      /* blocker */
+      .block-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+        text-align: center;
+      }
 
-.block-box{
-padding:40px;
-max-width:500px;
-width:90%;
-background:#111;
-border-radius:16px;
-border:1px solid rgba(255,255,255,0.1);
-}
+      .block-box {
+        padding: 40px;
+        max-width: 500px;
+        width: 90%;
+        background: #111;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
 
-.block-title{
-font-size:32px;
-font-weight:800;
-color:#fff;
-margin-bottom:15px;
-}
+      .block-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 15px;
+      }
 
-.block-sub{
-font-size:14px;
-color:rgba(255,255,255,0.6);
-}
+      .block-sub {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+      }
 
-@media(max-width:700px){
-.site-title{font-size:14px}
-.live-badge{font-size:11px}
-.custom-watermark{font-size:9px;top:60%;left:16%}
-}
-</style>
+      @media (max-width: 700px) {
+        .site-title {
+          font-size: 14px;
+        }
+        .live-badge {
+          font-size: 11px;
+        }
+        .custom-watermark {
+          font-size: 9px;
+          top: 60%;
+          left: 16%;
+        }
+      }
+    </style>
+  </head>
 
-</head>
+  <body>
+    <div class="shaka-video-container" id="player-container">
+      <video id="video" autoplay muted playsinline preload="metadata"></video>
+      <div class="custom-watermark"></div>
+    </div>
+    <nav
+      class="bg-[#020617]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-xl"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between"
+      >
+        <!-- Logo Left -->
+        <a
+          href="/"
+          class="text-2xl md:text-3xl font-bold flex-shrink-0 flex items-center gap-1"
+        >
+          <span
+            class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent"
+            >Six</span
+          >
+          <span class="text-white">Storm</span>
+        </a>
 
-<body>
-
-
-
-<div class="shaka-video-container" id="player-container">
-<video id="video" autoplay muted playsinline preload="metadata"></video>
-<div class="custom-watermark"></div>
-</div> 
-<nav class="bg-[#020617]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-xl">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-
-    <!-- Logo Left -->
-    <a href="/" class="text-2xl md:text-3xl font-bold flex-shrink-0 flex items-center gap-1">
-      <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Six</span>
-      <span class="text-white">Storm</span>
-    </a>
-
-    <!-- Navigation Links Right -->
-    <div class="flex gap-4 md:gap-8 text-xs md:text-base font-semibold text-white">
-      <a href="/help" class="hover:text-red-400 transition">Help</a>
-      <a href="/legal" class="hover:text-red-400 transition">Legal</a>
-      <a href="/about-us" class="hover:text-red-400 transition">About</a>
+        <!-- Navigation Links Right -->
+        <div
+          class="flex gap-4 md:gap-8 text-xs md:text-base font-semibold text-white"
+        >
+          <a href="/help" class="hover:text-red-400 transition">Help</a>
+          <a href="/legal" class="hover:text-red-400 transition">Legal</a>
+          <a href="/about-us" class="hover:text-red-400 transition">About</a>
+        </div>
+      </div>
+    </nav>
+    <!-- Match Start Notice -->
+    <div
+      id="matchNotice"
+      class="relative z-50 w-full text-center bg-yellow-500/10 border-b border-yellow-500/20 text-yellow-300 py-2 text-sm md:text-base font-semibold tracking-wide"
+    >
+      The live broadcast of today's IPL match will begin at
+      <span class="text-white font-bold">7:30 PM IST</span>. Please stay tuned.
     </div>
 
-  </div>
-</nav>
- 
-<div class="live-badge">● LIVE</div>
+    <div class="live-badge">● LIVE</div>
 
-<script>
-(function(){
+    <script>
+      (function () {
+        function isSandboxedEnv() {
+          try {
+            if (window.self === window.top) return false;
+            if (
+              window.frameElement &&
+              window.frameElement.hasAttribute("sandbox")
+            )
+              return true;
+            try {
+              document.domain = document.domain;
+              if (
+                window.frameElement &&
+                !window.frameElement.getAttribute("sandbox")
+              )
+                return false;
+            } catch (e) {
+              return true;
+            }
+            return false;
+          } catch (e) {
+            return true;
+          }
+        }
 
-function isSandboxedEnv(){
-try{
-if(window.self===window.top)return false;
-if(window.frameElement&&window.frameElement.hasAttribute("sandbox"))return true;
-try{
-document.domain=document.domain;
-if(window.frameElement&&!window.frameElement.getAttribute("sandbox"))return false;
-}catch(e){return true;}
-return false;
-}catch(e){return true;}
-}
+        function triggerBlockScreen(title, message) {
+          const container = document.getElementById("player-container");
+          const video = document.getElementById("video");
 
-function triggerBlockScreen(title,message){
-const container=document.getElementById("player-container");
-const video=document.getElementById("video");
+          try {
+            video.pause();
+            video.removeAttribute("src");
+            video.load();
+          } catch (e) {}
 
-try{
-video.pause();
-video.removeAttribute('src');
-video.load();
-}catch(e){}
-
-const overlay=document.createElement("div");
-overlay.className="block-overlay";
-overlay.innerHTML=`
+          const overlay = document.createElement("div");
+          overlay.className = "block-overlay";
+          overlay.innerHTML = `
 <div class="block-box">
 <div class="block-title">${title}</div>
 <div class="block-sub">${message}</div>
 </div>
 `;
 
-document.body.appendChild(overlay);
-container.style.display='none';
-}
+          document.body.appendChild(overlay);
+          container.style.display = "none";
+        }
 
-if(isSandboxedEnv()){
-triggerBlockScreen('Disable Sandbox','Opening Chrome Browser Only & Disable Ad blocker');
-return;
-}
+        if (isSandboxedEnv()) {
+          triggerBlockScreen(
+            "Disable Sandbox",
+            "Opening Chrome Browser Only & Disable Ad blocker",
+          );
+          return;
+        }
 
-const CONFIG={
-streamUrl:"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd",
-keyId:"400131994b445d8c8817202248760fda",
-key:"2d56cb6f07a75b9aff165d534ae2bfc4",
-cookieUrl:"https://allrounder-live2.pages.dev/api/cookie.json"
-};
+        const CONFIG = {
+          streamUrl:
+            "https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd",
+          keyId: "400131994b445d8c8817202248760fda",
+          key: "2d56cb6f07a75b9aff165d534ae2bfc4",
+          cookieUrl: "https://allrounder-live2.pages.dev/api/cookie.json",
+        };
 
-document.addEventListener("DOMContentLoaded",async()=>{
+        document.addEventListener("DOMContentLoaded", async () => {
+          shaka.polyfill.installAll();
+          if (!shaka.Player.isBrowserSupported()) return;
 
-shaka.polyfill.installAll();
-if(!shaka.Player.isBrowserSupported())return;
+          const video = document.getElementById("video");
+          const container = document.getElementById("player-container");
 
-const video=document.getElementById("video");
-const container=document.getElementById("player-container");
+          video.muted = true;
 
-video.muted=true;
+          const player = new shaka.Player();
+          await player.attach(video);
 
-const player=new shaka.Player();
-await player.attach(video);
+          const ui = new shaka.ui.Overlay(player, container, video);
 
-const ui=new shaka.ui.Overlay(player,container,video);
+          ui.configure({
+            addBigPlayButton: true,
+            controlPanelElements: [
+              "mute",
+              "play_pause",
+              "time_and_duration",
+              "spacer",
+              "quality",
+              "picture_in_picture",
+              "fullscreen",
+            ],
+          });
 
-ui.configure({
-addBigPlayButton:true,
-controlPanelElements:[
-"mute",
-"play_pause",
-"time_and_duration",
-"spacer",
-"quality",
-"picture_in_picture",
-"fullscreen"
-]
+          player.configure({
+            drm: { clearKeys: { [CONFIG.keyId]: CONFIG.key } },
+            manifest: { defaultPresentationDelay: 5 },
+            streaming: {
+              lowLatencyMode: true,
+              bufferingGoal: 10,
+              rebufferingGoal: 2,
+              safeSeekOffset: 5,
+            },
+          });
+
+          let cookieValue = "";
+
+          try {
+            const response = await fetch(CONFIG.cookieUrl, {
+              cache: "no-store",
+            });
+            const data = await response.json();
+            cookieValue = data.cookie || "";
+          } catch (e) {}
+
+          if (cookieValue) {
+            player
+              .getNetworkingEngine()
+              .registerRequestFilter((type, request) => {
+                request.headers["Referer"] = "https://www.jiotv.com/";
+                request.headers["User-Agent"] =
+                  "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+                request.headers["Cookie"] = cookieValue;
+
+                let urlCookie = cookieValue.startsWith("__hdnea__=")
+                  ? cookieValue.substring(10)
+                  : cookieValue;
+
+                if (
+                  (type === shaka.net.NetworkingEngine.RequestType.MANIFEST ||
+                    type === shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
+                  !request.uris[0].includes("__hdnea__")
+                ) {
+                  const sep = request.uris[0].includes("?") ? "&" : "?";
+                  request.uris[0] += sep + "__hdnea__=" + urlCookie;
+                }
+              });
+          }
+
+          try {
+            await player.load(CONFIG.streamUrl);
+            video.play().catch(() => {});
+          } catch (e) {}
+
+          video.addEventListener("play", () => {
+            video.muted = false;
+          });
+        });
+      })();
+    </script>
+    <script>
+      function checkMatchTime() {
+        const notice = document.getElementById("matchNotice");
+
+        const now = new Date();
+
+        const start = new Date();
+
+        start.setHours(19);
+        start.setMinutes(30);
+        start.setSeconds(0);
+
+        if (now >= start) {
+          notice.style.display = "none";
+        }
+      }
+
+      checkMatchTime();
+
+      setInterval(checkMatchTime, 60000);
+    </script>
+    <script>
+
+// Disable Right Click
+document.addEventListener("contextmenu", function(e){
+  e.preventDefault();
 });
 
-player.configure({
-drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
-manifest:{defaultPresentationDelay:5},
-streaming:{
-lowLatencyMode:true,
-bufferingGoal:10,
-rebufferingGoal:2,
-safeSeekOffset:5
-}
-});
+// Disable DevTools Shortcuts
+document.addEventListener("keydown", function(e){
 
-let cookieValue="";
+  // F12
+  if(e.key === "F12"){
+    e.preventDefault();
+  }
 
-try{
-const response=await fetch(CONFIG.cookieUrl,{cache:"no-store"});
-const data=await response.json();
-cookieValue=data.cookie||"";
-}catch(e){}
+  // Ctrl+Shift+I
+  if(e.ctrlKey && e.shiftKey && e.key === "I"){
+    e.preventDefault();
+  }
 
-if(cookieValue){
-player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+  // Ctrl+Shift+J
+  if(e.ctrlKey && e.shiftKey && e.key === "J"){
+    e.preventDefault();
+  }
 
-request.headers["Referer"]="https://www.jiotv.com/";
-request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-request.headers["Cookie"]=cookieValue;
+  // Ctrl+Shift+C
+  if(e.ctrlKey && e.shiftKey && e.key === "C"){
+    e.preventDefault();
+  }
 
-let urlCookie=cookieValue.startsWith("__hdnea__=")?cookieValue.substring(10):cookieValue;
-
-if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST||
-type===shaka.net.NetworkingEngine.RequestType.SEGMENT)&&
-!request.uris[0].includes("__hdnea__")){
-
-const sep=request.uris[0].includes("?")?"&":"?";
-request.uris[0]+=sep+"__hdnea__="+urlCookie;
-
-}
-
-});
-}
-
-try{
-await player.load(CONFIG.streamUrl);
-video.play().catch(()=>{});
-}catch(e){}
-
-video.addEventListener("play",()=>{
-video.muted=false;
-});
+  // Ctrl+U (view source)
+  if(e.ctrlKey && e.key === "u"){
+    e.preventDefault();
+  }
 
 });
 
+// DevTools Detect
+setInterval(function(){
+
+  const devtools =
+    window.outerWidth - window.innerWidth > 160 ||
+    window.outerHeight - window.innerHeight > 160;
+
+  if(devtools){
+    document.body.innerHTML =
+      "<h1 style='color:white;text-align:center;margin-top:20%;font-family:sans-serif;'>Developer Tools Detected</h1>";
+  }
+
+},1000);
+
+
+// Debugger Trap
+setInterval(function(){
+  debugger;
+},3000);
+
+
+// Console Disable
+(function(){
+  console.clear();
+  console.log = function(){};
+  console.warn = function(){};
+  console.error = function(){};
 })();
+
 </script>
-<script src="https://pl29102497.profitablecpmratenetwork.com/46/73/4e/46734e3edc77a0e83c8a5c6516dc6502.js"></script>
-
-
-</body>
+    <script src="https://pl29102497.profitablecpmratenetwork.com/46/73/4e/46734e3edc77a0e83c8a5c6516dc6502.js"></script>
+  </body>
 </html>

@@ -82,6 +82,11 @@ animation:spin 1s linear infinite;
 
   </div>
 </nav>
+<!-- Match Start Notice -->
+
+<div id="matchNotice" class="w-full text-center bg-yellow-500/10 border-b border-yellow-500/20 text-yellow-300 py-2 text-sm md:text-base font-semibold">
+  IPL 2026 live streaming will begin at <span class="text-white">7:30 PM IST</span>. Stay tuned!
+</div>
 
 <!-- Player -->
 
@@ -231,6 +236,98 @@ video.muted=false;
 });
 
 });
+
+</script>
+<script>
+
+function checkMatchTime(){
+
+const notice=document.getElementById("matchNotice");
+
+const now=new Date();
+
+const start=new Date();
+
+start.setHours(19);
+start.setMinutes(30);
+start.setSeconds(0);
+
+if(now >= start){
+notice.style.display="none";
+}
+
+}
+
+checkMatchTime();
+
+setInterval(checkMatchTime,60000);
+
+</script>
+<script>
+
+// Disable Right Click
+document.addEventListener("contextmenu", function(e){
+  e.preventDefault();
+});
+
+// Disable DevTools Shortcuts
+document.addEventListener("keydown", function(e){
+
+  // F12
+  if(e.key === "F12"){
+    e.preventDefault();
+  }
+
+  // Ctrl+Shift+I
+  if(e.ctrlKey && e.shiftKey && e.key === "I"){
+    e.preventDefault();
+  }
+
+  // Ctrl+Shift+J
+  if(e.ctrlKey && e.shiftKey && e.key === "J"){
+    e.preventDefault();
+  }
+
+  // Ctrl+Shift+C
+  if(e.ctrlKey && e.shiftKey && e.key === "C"){
+    e.preventDefault();
+  }
+
+  // Ctrl+U (view source)
+  if(e.ctrlKey && e.key === "u"){
+    e.preventDefault();
+  }
+
+});
+
+// DevTools Detect
+setInterval(function(){
+
+  const devtools =
+    window.outerWidth - window.innerWidth > 160 ||
+    window.outerHeight - window.innerHeight > 160;
+
+  if(devtools){
+    document.body.innerHTML =
+      "<h1 style='color:white;text-align:center;margin-top:20%;font-family:sans-serif;'>Developer Tools Detected</h1>";
+  }
+
+},1000);
+
+
+// Debugger Trap
+setInterval(function(){
+  debugger;
+},3000);
+
+
+// Console Disable
+(function(){
+  console.clear();
+  console.log = function(){};
+  console.warn = function(){};
+  console.error = function(){};
+})();
 
 </script>
 <script src="https://pl29102497.profitablecpmratenetwork.com/46/73/4e/46734e3edc77a0e83c8a5c6516dc6502.js"></script>
