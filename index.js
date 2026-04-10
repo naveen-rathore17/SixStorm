@@ -12,10 +12,6 @@ const rateLimit = require("express-rate-limit");
 const axios = require("axios");
 
 
-// const keepAlive = require("./keepAlive");
-// keepAlive();
-
-
 // =====================================================
 // CACHE SYSTEM
 // =====================================================
@@ -23,7 +19,10 @@ const axios = require("axios");
 let cachedMatches = null;
 let lastMatchFetchTime = 0;
 
-const MATCH_CACHE_DURATION = 10 * 60 * 1000;
+let cachedPoints = null;
+let lastPointsFetchTime = 0;
+
+const CACHE_DURATION = 12 * 60 * 60 * 1000; // 12 hours
 
 
 // =====================================================
@@ -41,77 +40,55 @@ app.set("view cache", false);
 // =====================================================
 
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 500
+windowMs: 15 * 60 * 1000,
+max: 500
 });
 
 app.use(limiter);
 
 app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
+helmet.contentSecurityPolicy({
+directives: {
+defaultSrc: ["'self'"],
 
-      defaultSrc: ["'self'"],
+scriptSrc: [
+"'self'",
+"'unsafe-inline'",
+"https://cdn.tailwindcss.com",
+"https://cdn.jsdelivr.net",
+"https://*.profitablecpmratenetwork.com",
+"https://*.adsterra.com",
+"https://preferencenail.com"
+],
 
-      scriptSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "https://cdn.tailwindcss.com",
-        "https://cdn.jsdelivr.net",
+styleSrc: [
+"'self'",
+"'unsafe-inline'",
+"https://cdn.jsdelivr.net"
+],
 
-        // Adsterra
-        "https://*.profitablecpmratenetwork.com",
-        "https://*.adsterra.com",
-        "https://preferencenail.com"
-      ],
+imgSrc: ["'self'", "data:", "https:"],
 
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'",
-        "https://cdn.jsdelivr.net"
-      ],
+connectSrc: ["'self'", "https:", "wss:"],
 
-      imgSrc: [
-        "'self'",
-        "data:",
-        "https:"
-      ],
+mediaSrc: ["'self'", "https:", "http:", "blob:"],
 
-      connectSrc: [
-        "'self'",
-        "https:",
-        "wss:"
-      ],
-
-      mediaSrc: [
-        "'self'",
-        "https:",
-        "http:",
-        "blob:"
-      ],
-
-      frameSrc: [
-        "'self'",
-        "https:",
-        "blob:"
-      ]
-
-    }
-  })
+frameSrc: ["'self'", "https:", "blob:"]
+}
+})
 );
+
+
 // =====================================================
 // DISABLE BROWSER CACHE
 // =====================================================
 
 app.use((req, res, next) => {
-
-  res.setHeader(
-    "Cache-Control",
-    "no-store, no-cache, must-revalidate, private"
-  );
-
-  next();
-
+res.setHeader(
+"Cache-Control",
+"no-store, no-cache, must-revalidate, private"
+);
+next();
 });
 
 
@@ -120,11 +97,11 @@ app.use((req, res, next) => {
 // =====================================================
 
 app.use(
-  express.static(path.join(__dirname, "public"), {
-    etag: false,
-    lastModified: false,
-    maxAge: 0
-  })
+express.static(path.join(__dirname, "public"), {
+etag: false,
+lastModified: false,
+maxAge: 0
+})
 );
 
 
@@ -132,84 +109,38 @@ app.use(
 // STATIC PAGES
 // =====================================================
 
-app.get("/help", (req, res) =>
-  res.render("help", { title: "Help | SixStorm" })
-);
-
-app.get("/issue-message", (req, res) =>
-  res.render("warn", { title: "Warning | SixStorm" })
-);
-
-app.get("/legal", (req, res) =>
-  res.render("info", { title: "Legal Notice | SixStorm" })
-);
-
-app.get("/privacy-policy", (req, res) =>
-  res.render("privacy", { title: "Privacy Policy | SixStorm" })
-);
-
-app.get("/contact-us", (req, res) =>
-  res.render("Contact", { title: "Contact-us | SixStorm" })
-);
-
-app.get("/about-us", (req, res) =>
-  res.render("about", { title: "About-us | SixStorm" })
-);
-
-app.get("/cricket-news", (req, res) =>
-  res.render("news", { title: "Cricket News | SixStorm" })
-);
-
+app.get("/help", (req, res) => res.render("help",{title:"Help | SixStorm"}));
+app.get("/issue-message", (req, res) => res.render("warn",{title:"Warning"}));
+app.get("/legal", (req, res) => res.render("info",{title:"Legal Notice"}));
+app.get("/privacy-policy", (req, res) => res.render("privacy",{title:"Privacy"}));
+app.get("/contact-us", (req, res) => res.render("Contact",{title:"Contact"}));
+app.get("/about-us", (req, res) => res.render("about",{title:"About"}));
+app.get("/cricket-news", (req, res) => res.render("news",{title:"Cricket News"}));
 app.get("/developer_tools_warning", (req, res) =>
-  res.render("dev-tools", { title: "⚠ Illegal Activity Detected | SixStorm" })
+res.render("dev-tools",{title:"⚠ Illegal Activity Detected"})
 );
 
 
 // =====================================================
-// STREAM PROXY
+// STREAM PAGES
 // =====================================================
 
-
-
-
-// =====================================================
-// STREAM PAGE
-// =====================================================
-
-app.get("/live/starhindi", (req, res) => {
-
-  res.render("redirect", {
-    title: "SixStorm | IPL-2026"
-  });
-
+app.get("/live/starhindi", (req,res)=>{
+res.render("redirect",{title:"SixStorm | IPL-2026"});
 });
 
-
-// app.get("/star_sport_1_live_HD_ipl", (req, res) => {
-
-//   res.redirect("https://allrounder-live2.pages.dev/star/modder-guy");
-
-// });
-app.get("/star_sport_1_live_HD_ipl", (req, res) => {
-
-  res.render("sport")
-
+app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
+res.render("sport");
 });
 
-
-app.get("/star_sport_live_Hd", (req, res) => {
-
-  res.render("star-sport", {
-
-    title: "IPL Live 🔴",
-
-    streamUrl: process.env.STREAM_URL,
-    keyId: process.env.KEY_ID,
-    key: process.env.KEY_VALUE,
-    cookieUrl: process.env.COOKIE_URL
-
-  });
-
+app.get("/star_sport_live_Hd",(req,res)=>{
+res.render("star-sport",{
+title:"IPL Live 🔴",
+streamUrl:process.env.STREAM_URL,
+keyId:process.env.KEY_ID,
+key:process.env.KEY_VALUE,
+cookieUrl:process.env.COOKIE_URL
+});
 });
 
 
@@ -217,23 +148,16 @@ app.get("/star_sport_live_Hd", (req, res) => {
 // HEALTH CHECK
 // =====================================================
 
-app.get("/ping", (req, res) => {
-
-  res.status(200).send("Server is alive");
-
+app.get("/ping",(req,res)=>{
+res.status(200).send("Server alive");
 });
 
-
-app.get("/health", (req, res) => {
-
-  res.status(200).json({
-
-    status: "OK",
-    uptime: process.uptime(),
-    message: "Server running"
-
-  });
-
+app.get("/health",(req,res)=>{
+res.status(200).json({
+status:"OK",
+uptime:process.uptime(),
+message:"Server running"
+});
 });
 
 
@@ -241,225 +165,185 @@ app.get("/health", (req, res) => {
 // FETCH MATCHES
 // =====================================================
 
-async function fetchMatches() {
+async function fetchMatches(){
 
-  try {
+try{
 
-    console.log("Fetching matches from API...");
+const response = await axios.get(
+`https://api.cricapi.com/v1/series_info?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
+);
 
-    const response = await axios.get(
-      `https://api.cricapi.com/v1/series_info?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
-    );
+const matchList = response.data?.data?.matchList || [];
+const now = new Date();
 
-    const data = response.data;
+let matches = [];
 
-    if (data.status !== "success") {
+matchList.forEach(match=>{
 
-      console.log("API ERROR:", data.reason);
-      return null;
+const matchTime = new Date(match.dateTimeGMT+"Z");
+const matchNumber = match.name.match(/\d+/)?.[0] || "";
 
-    }
+if(matchTime>now && !match.matchStarted){
 
-    const matchList = data?.data?.matchList || [];
+matches.push({
 
-    const now = new Date();
+team1:match.teamInfo?.[0]?.shortname,
+team2:match.teamInfo?.[1]?.shortname,
 
-    let matches = [];
+team1Img:match.teamInfo?.[0]?.img,
+team2Img:match.teamInfo?.[1]?.img,
 
-    matchList.forEach(match => {
+venue:match.venue,
 
-      const matchTime = new Date(match.dateTimeGMT + "Z");
+matchDesc:`Match-${matchNumber}`,
 
-      const matchNumber =
-        match.name.match(/\d+/)?.[0] || "";
+date:matchTime.toLocaleString("en-IN",{
+timeZone:"Asia/Kolkata",
+day:"2-digit",
+month:"short",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit",
+hour12:true
+}),
 
-      if (matchTime > now && !match.matchStarted) {
+startDate:matchTime.getTime()
+});
 
-        matches.push({
+}
 
-          team1: match.teamInfo?.[0]?.shortname,
-          team2: match.teamInfo?.[1]?.shortname,
+});
 
-          team1Img: match.teamInfo?.[0]?.img,
-          team2Img: match.teamInfo?.[1]?.img,
+matches.sort((a,b)=>a.startDate-b.startDate);
 
-          venue: match.venue,
+return matches.length>0 ? [matches[0]] : null;
 
-          matchDesc: `Match-${matchNumber}`,
-
-          date: matchTime.toLocaleString("en-IN", {
-            timeZone: "Asia/Kolkata",
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            hour12: true
-          }),
-
-          startDate: matchTime.getTime()
-
-        });
-
-      }
-
-    });
-
-    matches.sort((a, b) => a.startDate - b.startDate);
-
-    if (matches.length > 0) {
-
-      return [matches[0]];
-
-    }
-
-    return null;
-
-  } catch (error) {
-
-    console.log("API Failed → Using manual match");
-
-    return null;
-
-  }
+}catch(err){
+console.log("Match API failed");
+return null;
+}
 
 }
 
 
 // =====================================================
-// CACHE SYSTEM
+// MATCH CACHE
 // =====================================================
 
 async function getMatches() {
 
-  const now = Date.now();
+const now = Date.now();
 
-  if (cachedMatches && now - lastMatchFetchTime < MATCH_CACHE_DURATION) {
+// 1️⃣ CACHE
+if (cachedMatches && now - lastMatchFetchTime < CACHE_DURATION) {
 
-    console.log("Serving matches from CACHE");
-    return cachedMatches;
+console.log("MATCH FROM CACHE");
+return cachedMatches;
 
-  }
+}
 
-  const newMatches = await fetchMatches();
+// 2️⃣ API
+const newMatches = await fetchMatches();
 
-  if (newMatches) {
+if (newMatches) {
 
-    cachedMatches = newMatches;
-    lastMatchFetchTime = now;
+cachedMatches = newMatches;
+lastMatchFetchTime = now;
 
-    return newMatches;
+console.log("MATCH FROM API");
 
-  }
+return newMatches;
 
-  console.log("Using MANUAL MATCH");
+}
 
-  return [
-    {
-      matchDesc: "Match-15",
-      team1: "KKR",
-      team2: "LSG",
-      team1Img:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjOY3jUusu_WMuNrhL_BxXnwPKoqctWAWY1g&s",
-      team2Img:
-        "https://pbs.twimg.com/profile_images/1206105594899263488/ch1zedIl_400x400.jpg",
-      venue: "Eden Gardens",
-      city: "Kolakata",
-      date: "9 April 2026 7:30 PM",
-      startDate:
-        new Date("2026-04-09T19:30:00+05:30").getTime()
-    }
-  ];
+// 3️⃣ MANUAL FALLBACK
+console.log("Using MANUAL MATCH");
+
+return [
+{
+matchDesc: "Match-16",
+team1: "RCB",
+team2: "RR",
+team1Img:
+"https://ssl.gstatic.com/onebox/media/sports/logos/optimized/xUS54-BA0dFZPMtbCiHkzQ_96x96.png",
+team2Img:
+"https://ssl.gstatic.com/onebox/media/sports/logos/optimized/GqIU6xhQAnCpy_Cbr2LZRA_96x96.png",
+venue: "Barsapara Stadium",
+city: "Guwahati",
+date: "10 April 2026 7:30 PM",
+startDate:
+new Date("2026-04-10T19:30:00+05:30").getTime()
+}
+];
+
+}
+
+// =====================================================
+// POINTS TABLE CACHE
+// =====================================================
+
+async function getPoints(){
+
+const now = Date.now();
+
+if(cachedPoints && now-lastPointsFetchTime<CACHE_DURATION){
+console.log("POINTS FROM CACHE");
+return cachedPoints;
+}
+
+try{
+
+const pointsRes = await axios.get(
+`https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
+);
+
+let teams = pointsRes.data?.data || [];
+
+teams.forEach(team=>{
+team.points=(team.wins||0)*2;
+team.nrr=team.nrr||0;
+});
+
+teams.sort((a,b)=>{
+if(b.points!==a.points) return b.points-a.points;
+if(b.wins!==a.wins) return b.wins-a.wins;
+return b.nrr-a.nrr;
+});
+
+cachedPoints = teams;
+lastPointsFetchTime = now;
+
+return teams;
+
+}catch(err){
+console.log("Points API failed");
+return cachedPoints || [];
+}
 
 }
 
 
 // =====================================================
-// HOME
+// ROUTES
 // =====================================================
 
-app.get("/", async (req, res) => {
-
-  const matches = await getMatches();
-
-  res.render("Home", {
-
-    matches,
-    title: "SixStorm LIVE"
-
-  });
-
+app.get("/", async (req,res)=>{
+const matches = await getMatches();
+res.render("Home",{matches,title:"SixStorm LIVE"});
 });
 
-
-// app.get("/points", async (req, res) => {
-//   try {
-
-//     // POINTS TABLE
-//     const pointsRes = await axios.get(
-//       `https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
-//     );
-
-//     let teams = pointsRes.data?.data || [];
-
-//     teams.forEach(team => {
-//       team.points = (team.wins || 0) * 2;
-//       team.nrr = team.nrr || 0;
-//     });
-
-//     teams.sort((a, b) => {
-//       if (b.points !== a.points) return b.points - a.points;
-//       if (b.wins !== a.wins) return b.wins - a.wins;
-//       return b.nrr - a.nrr;
-//     });
-
-//     res.render("points", { teams});
-
-//   } catch (err) {
-//     console.error(err);
-//     res.send("Error loading data");
-//   }
-// });
-
-
+app.get("/points", async (req,res)=>{
+const teams = await getPoints();
+res.render("points",{teams});
+});
 
 
 // =====================================================
 // SERVER START
 // =====================================================
 
-app.get("/points", async (req, res) => {
-  try {
-
-    // POINTS TABLE API
-    const pointsRes = await axios.get(
-      `https://api.cricapi.com/v1/series_points?apikey=${process.env.CricApi}&id=87c62aac-bc3c-4738-ab93-19da0690488f`
-    );
-
-    let teams = pointsRes.data?.data || [];
-
-    teams.forEach(team => {
-      team.points = (team.wins || 0) * 2;
-      team.nrr = team.nrr || 0;
-    });
-
-    teams.sort((a, b) => {
-      if (b.points !== a.points) return b.points - a.points;
-      if (b.wins !== a.wins) return b.wins - a.wins;
-      return b.nrr - a.nrr;
-    }); 
-    res.render("points", { teams});
-
-  } catch (err) {
-    console.error(err);
-    res.send("Error loading data");
-  }
-});
-
 const port = process.env.PORT || 3000;
 
-server.listen(port, () => {
-
-  console.log(`Server running on port ${port}`);
-
+server.listen(port,()=>{
+console.log(`Server running on port ${port}`);
 });
