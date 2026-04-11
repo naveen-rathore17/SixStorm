@@ -129,7 +129,7 @@ app.get("/live/starhindi", (req,res)=>{
 res.render("redirect",{title:"SixStorm | IPL-2026"});
 });
 app.get("/ipl/live/2026", (req,res)=>{
-res.render("sport-1",{title:"SixStorm | IPL-2026"});
+res.redirect("https://allrounder-live4.pages.dev/star/star-1-hindi?autoplay=true&muted=true")
 });
 
 app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
