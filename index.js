@@ -135,6 +135,9 @@ res.render("sport-1",{title:"SixStorm | IPL-2026"});
 app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
 res.render("sport");
 });
+app.get("/watching",(req,res)=>{
+res.render("prime");
+});
 
 app.get("/star_sport_live_Hd",(req,res)=>{
 res.render("star-sport",{
