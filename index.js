@@ -128,6 +128,9 @@ res.render("dev-tools",{title:"⚠ Illegal Activity Detected"})
 app.get("/live/starhindi", (req,res)=>{
 res.render("redirect",{title:"SixStorm | IPL-2026"});
 });
+app.get("/ipl/live/2026", (req,res)=>{
+res.render("sport-1",{title:"SixStorm | IPL-2026"});
+});
 
 app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
 res.render("sport");
