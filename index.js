@@ -135,8 +135,8 @@ res.redirect("https://allrounder-live4.pages.dev/star/star-1-hindi?autoplay=true
 app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
 res.render("sport");
 });
-app.get("/watching",(req,res)=>{
-res.render("prime");
+app.get("/starsport-2",(req,res)=>{
+res.render("sport-1");
 });
 
 app.get("/star_sport_live_Hd",(req,res)=>{
