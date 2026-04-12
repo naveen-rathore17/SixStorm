@@ -125,12 +125,6 @@ res.render("dev-tools",{title:"⚠ Illegal Activity Detected"})
 // STREAM PAGES
 // =====================================================
 
-app.get("/live/starhindi", (req,res)=>{
-res.render("redirect",{title:"SixStorm | IPL-2026"});
-});
-app.get("/ipl/live/2026", (req,res)=>{
-res.redirect("https://allrounder-live4.pages.dev/star/star-1-hindi?autoplay=true&muted=true")
-});
 
 app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
 res.render("sport");
@@ -139,15 +133,15 @@ app.get("/starsport-2",(req,res)=>{
 res.render("sport-1");
 });
 
-app.get("/star_sport_live_Hd",(req,res)=>{
-res.render("star-sport",{
-title:"IPL Live 🔴",
-streamUrl:process.env.STREAM_URL,
-keyId:process.env.KEY_ID,
-key:process.env.KEY_VALUE,
-cookieUrl:process.env.COOKIE_URL
-});
-});
+// app.get("/star_sport_live_Hd",(req,res)=>{
+// res.render("star-sport",{
+// title:"IPL Live 🔴",
+// streamUrl:process.env.STREAM_URL,
+// keyId:process.env.KEY_ID,
+// key:process.env.KEY_VALUE,
+// cookieUrl:process.env.COOKIE_URL
+// });
+// });
 
 
 // =====================================================
