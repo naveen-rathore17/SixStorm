@@ -1,337 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-<head>
+    <title>SixStorm | IPL 2026 Live</title>
+    <link rel="icon" type="image/png" href="/images/favicon2.png" />
+    <link rel="shortcut icon" href="/images/favicon2.png" />
 
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="referrer" content="no-referrer" />
 
-<title>SixStorm | IPL 2026 Live</title>
-<link rel="icon" type="image/png" href="/images/favicon2.png" />
-  <link rel="shortcut icon" href="/images/favicon2.png" />
+    <!-- Plyr CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css"
+    />
 
-<meta name="referrer" content="no-referrer">
+    <!-- HLS.js -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
-<script src="https://cdn.tailwindcss.com"></script>
+    <!-- Plyr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"/>
-
-<style>
-
-html,body{
-height:100%;
-background:black;
-}
-
-video{
-width:100%;
-height:100%;
-object-fit:contain;
-}
-
-/* Buffer Loader */
-
-.loader{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-display:none;
-z-index:30;
-}
-
-.spinner{
-width:48px;
-height:48px;
-border:4px solid rgba(255,255,255,0.2);
-border-top:4px solid red;
-border-radius:50%;
-animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-0%{transform:rotate(0)}
-100%{transform:rotate(360deg)}
-}
-
-</style>
-
-</head>
-
-<body class="bg-black text-white flex flex-col">
-
-<!-- Header -->
-
-<nav class="bg-[#020617]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-xl">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-
-    <!-- Logo Left -->
-    <a href="/" class="text-2xl md:text-3xl font-bold flex-shrink-0 flex items-center gap-1">
-      <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Six</span>
-      <span class="text-white">Storm</span>
-    </a>
-
-    <!-- Navigation Links Right -->
-    <div class="flex gap-4 md:gap-8 text-xs md:text-base font-semibold">
-      <a href="/help" class="hover:text-red-400 transition">Help</a>
-      <a href="/legal" class="hover:text-red-400 transition">Legal</a>
-      <a href="/about-us" class="hover:text-red-400 transition">About</a>
-      <a href="/contact-us" class="hover:text-red-400 transition">Contact</a>
+    <style>
+      body {
+        background-color: #000;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+      .video-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: #000;
+      }
+      .plyr {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="video-container">
+      <video
+        autoplay
+        playsinline
+        muted
+        id="player"
+        controls
+        preload="metadata"
+      ></video>
     </div>
 
-  </div>
-</nav>
-<!-- Match Start Notice -->
-
-<div id="matchNotice" class="w-full text-center bg-yellow-500/10 border-b border-yellow-500/20 text-yellow-300 py-2 text-sm md:text-base font-semibold">
-  IPL 2026 live streaming will begin at <span class="text-white">7:30 PM IST</span>. Stay tuned!
-</div>
-
-<!-- Player -->
-
-<div id="player-container" class="relative flex-1 flex items-center justify-center">
-
-<video id="video" autoplay muted playsinline preload="metadata"></video>
-
-<!-- LIVE Badge -->
-
-<div class="absolute top-4 left-4 bg-red-600 px-3 py-1 text-xs font-bold rounded shadow-lg animate-pulse">
-LIVE
-</div>
-
-<!-- SixStorm Badge -->
-
-<div class="absolute bottom-4 left-4 bg-black/70 backdrop-blur px-3 py-1 text-xs rounded border border-gray-700">
-SixStorm
-</div>
-
-</div>
-
-<script>
-
-const CONFIG={
-
-streamUrl:"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_BTS/output/index.mpd",
-keyId:"965dc2ddb1d85138ad787999a7f30ca5",
-key:"859695076e67fe961836b564db6d689c",
-
-cookieUrl:"https://allrounder-live4.pages.dev/api/cookie.json"
-
-};
-
-document.addEventListener("DOMContentLoaded",async()=>{
-
-shaka.polyfill.installAll();
-
-if(!shaka.Player.isBrowserSupported()) return;
-
-const video=document.getElementById("video");
-const container=document.getElementById("player-container");
-const loader=document.getElementById("loader");
-
-const player=new shaka.Player(video);
-
-const ui=new shaka.ui.Overlay(player,container,video);
-
-ui.configure({
-
-addBigPlayButton:true,
-
-controlPanelElements:[
-"play_pause",
-"time_and_duration",
-"spacer",
-"mute",
-"volume",
-"quality",
-"fullscreen"
-]
-
-});
-
-player.configure({
-
-drm:{
-clearKeys:{[CONFIG.keyId]:CONFIG.key}
-},
-
-manifest:{
-defaultPresentationDelay:5
-},
-
-streaming:{
-lowLatencyMode:true,
-bufferingGoal:10,
-rebufferingGoal:2,
-safeSeekOffset:5
-}
-
-});
-
-let cookieValue="";
-
-try{
-
-const response=await fetch(CONFIG.cookieUrl,{cache:"no-store"});
-
-const data=await response.json();
-
-cookieValue=data.cookie||"";
-
-}catch(e){}
-
-if(cookieValue){
-
-player.getNetworkingEngine().registerRequestFilter((type,request)=>{
-
-request.headers["Referer"]="https://www.jiotv.com/";
-
-request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-
-request.headers["Cookie"]=cookieValue;
-
-let urlCookie=cookieValue.startsWith("__hdnea__=")
-?cookieValue.substring(10)
-:cookieValue;
-
-if(
-(type===shaka.net.NetworkingEngine.RequestType.MANIFEST ||
-type===shaka.net.NetworkingEngine.RequestType.SEGMENT) &&
-!request.uris[0].includes("__hdnea__")
-){
-
-const sep=request.uris[0].includes("?")?"&":"?";
-
-request.uris[0]+=sep+"__hdnea__="+urlCookie;
-
-}
-
-});
-
-}
-
-/* Loader Controls */
-
-video.addEventListener("waiting",()=>{
-loader.style.display="block";
-});
-
-video.addEventListener("playing",()=>{
-loader.style.display="none";
-});
-
-/* Load Stream */
-
-try{
-
-await player.load(CONFIG.streamUrl);
-
-video.play().catch(()=>{});
-
-}catch(e){}
-
-video.addEventListener("play",()=>{
-video.muted=false;
-});
-
-});
-
-</script>
-<script>
-
-function checkMatchTime(){
-
-const notice=document.getElementById("matchNotice");
-
-const now=new Date();
-
-const start=new Date();
-
-start.setHours(19);
-start.setMinutes(30);
-start.setSeconds(0);
-
-if(now >= start){
-notice.style.display="none";
-}
-
-}
-
-checkMatchTime();
-
-setInterval(checkMatchTime,60000);
-
-</script>
-<script>
-
-// Disable Right Click
-document.addEventListener("contextmenu", function(e){
-  e.preventDefault();
-});
-
-// Disable DevTools Shortcuts
-document.addEventListener("keydown", function(e){
-
-  // F12
-  if(e.key === "F12"){
-    e.preventDefault();
-  }
-
-  // Ctrl+Shift+I
-  if(e.ctrlKey && e.shiftKey && e.key === "I"){
-    e.preventDefault();
-  }
-
-  // Ctrl+Shift+J
-  if(e.ctrlKey && e.shiftKey && e.key === "J"){
-    e.preventDefault();
-  }
-
-  // Ctrl+Shift+C
-  if(e.ctrlKey && e.shiftKey && e.key === "C"){
-    e.preventDefault();
-  }
-
-  // Ctrl+U (view source)
-  if(e.ctrlKey && e.key === "u"){
-    e.preventDefault();
-  }
-
-});
-
-// DevTools Detect
-setInterval(function(){
-
-  const devtools =
-    window.outerWidth - window.innerWidth > 160 ||
-    window.outerHeight - window.innerHeight > 160;
-
-  if(devtools){
-    document.body.innerHTML =
-      "<h1 style='color:white;text-align:center;margin-top:20%;font-family:sans-serif;'>Developer Tools Detected</h1>";
-  }
-
-},1000);
-
-
-// Debugger Trap
-setInterval(function(){
-  debugger;
-},3000);
-
-
-// Console Disable
-(function(){
-  console.clear();
-  console.log = function(){};
-  console.warn = function(){};
-  console.error = function(){};
-})();
-
-</script>
-<script src="https://pl29102497.profitablecpmratenetwork.com/46/73/4e/46734e3edc77a0e83c8a5c6516dc6502.js"></script>
-
-
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const video = document.getElementById("player");
+        const source =
+          "https://tcfbrravdlgqrymqfcgu.supabase.co/functions/v1/stream-proxy?url=http://180.94.28.28:8097/STAR-SPORTS-1/index.m3u8";
+
+        const defaultOptions = {
+          autoplay: true,
+          controls: [
+            "play",
+            "rewind",
+            "fast-forward",
+            "progress",
+            "current-time",
+            "mute",
+            "volume",
+            "settings",
+            "fullscreen",
+          ],
+          settings: ["quality"],
+        };
+
+        let player;
+
+        function setupPlayer(hls, qualities = []) {
+          player = new Plyr(video, {
+            ...defaultOptions,
+            quality: qualities.length
+              ? {
+                  default: qualities[0],
+                  options: qualities,
+                  forced: true,
+                  onChange: (q) => {
+                    hls.levels.forEach((level, index) => {
+                      if (level.height === q) {
+                        hls.currentLevel = index;
+                      }
+                    });
+                  },
+                }
+              : {},
+          });
+
+          // 🔁 AUTO RESUME
+          setInterval(() => {
+            if (video.paused && video.readyState > 2) {
+              video.play().catch(() => {});
+            }
+          }, 3000);
+
+          // 🔊 AUTO UNMUTE (on first interaction)
+          const unmute = () => {
+            video.muted = false;
+            video.volume = 1;
+            document.removeEventListener("click", unmute);
+            document.removeEventListener("touchstart", unmute);
+          };
+
+          document.addEventListener("click", unmute);
+          document.addEventListener("touchstart", unmute);
+        }
+
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            autoStartLoad: true,
+          });
+
+          hls.loadSource(source);
+          hls.attachMedia(video);
+
+          hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
+            const availableQualities = data.levels
+              .map((l) => l.height)
+              .sort((a, b) => b - a);
+            video.play().catch(() => {});
+            setupPlayer(hls, availableQualities);
+          });
+
+          // 🔥 AUTO RECOVER ON ERROR
+          hls.on(Hls.Events.ERROR, function (_, data) {
+            if (data.fatal) {
+              hls.startLoad();
+            }
+          });
+        } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = source;
+          video.addEventListener("loadedmetadata", () => {
+            video.play().catch(() => {});
+            setupPlayer(null);
+          });
+        }
+      });
+    </script>
+  </body>
 </html>
