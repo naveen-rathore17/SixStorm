@@ -1,62 +1,102 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-
-    <title>SixStorm | IPL 2026 Live</title>
+    <title>SixStorm | Star Sport 1</title>
     <link rel="icon" type="image/png" href="/images/favicon2.png" />
     <link rel="shortcut icon" href="/images/favicon2.png" />
-
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"
+    />
     <meta name="referrer" content="no-referrer" />
 
-    <!-- Plyr CSS -->
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css"
     />
-
-    <!-- HLS.js -->
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
-    <!-- Plyr JS -->
     <script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
 
     <style>
       body {
         background-color: #000;
         margin: 0;
-        padding: 0;
         overflow: hidden;
       }
-      html,
-      body {
-        height: 100%;
-        width: 100%;
-      }
+
       .video-container {
         position: relative;
         width: 100%;
-        height: 100%;
-        background: #000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        height: 100vh;
       }
+
       video {
         width: 100%;
         height: 100%;
         object-fit: contain;
-        background: #000;
       }
-      .plyr {
-        height: 100%;
+
+      /* 🔥 LOADER OVERLAY */
+      .loader {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
+        height: 100%;
+        background: black;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        color: white;
+        font-family: Arial;
+      }
+
+      .loader-text {
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+
+      .progress-bar {
+        width: 60%;
+        height: 6px;
+        background: #333;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .progress {
+        height: 100%;
+        width: 0%;
+        background: #00ffcc;
+        animation: loadAnim 60s linear forwards;
+      }
+
+      @keyframes loadAnim {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 100%;
+        }
       }
     </style>
   </head>
+
   <body>
     <div class="video-container">
+      <!-- 🔥 LOADER -->
+      <div class="loader" id="loader">
+        <div class="loader-text">
+          The stream is loading. Please wait up to 1 minute for the best viewing
+          experience.
+        </div>
+        <div class="progress-bar">
+          <div class="progress"></div>
+        </div>
+      </div>
+
       <video
         autoplay
         playsinline
@@ -70,82 +110,38 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById("player");
+        const loader = document.getElementById("loader");
+
         const source =
           "https://tcfbrravdlgqrymqfcgu.supabase.co/functions/v1/stream-proxy?url=http://180.94.28.28:8097/STAR-SPORTS-1/index.m3u8";
 
-        const defaultOptions = {
-          autoplay: true,
-          controls: [
-            "play",
-            "rewind",
-            "fast-forward",
-            "progress",
-            "current-time",
-            "mute",
-            "volume",
-            "settings",
-            "fullscreen",
-          ],
-          settings: ["quality"],
-        };
-
         let player;
 
+        function hideLoader() {
+          loader.style.display = "none";
+        }
+
         function setupPlayer(hls, qualities = []) {
-          player = new Plyr(video, {
-            ...defaultOptions,
-            quality: qualities.length
-              ? {
-                  default: qualities[0],
-                  options: qualities,
-                  forced: true,
-                  onChange: (q) => {
-                    hls.levels.forEach((level, index) => {
-                      if (level.height === q) {
-                        hls.currentLevel = index;
-                      }
-                    });
-                  },
-                }
-              : {},
-          });
+          player = new Plyr(video);
 
-          // 🔁 AUTO RESUME
-          setInterval(() => {
-            if (video.paused && video.readyState > 2) {
-              video.play().catch(() => {});
-            }
-          }, 3000);
+          // 🔥 Hide loader when video plays
+          video.addEventListener("playing", hideLoader);
 
-          // 🔊 AUTO UNMUTE (on first interaction)
-          const unmute = () => {
-            video.muted = false;
-            video.volume = 1;
-            document.removeEventListener("click", unmute);
-            document.removeEventListener("touchstart", unmute);
-          };
-
-          document.addEventListener("click", unmute);
-          document.addEventListener("touchstart", unmute);
+          // Backup: hide after 60 sec anyway
+          setTimeout(hideLoader, 60000);
         }
 
         if (Hls.isSupported()) {
-          const hls = new Hls({
-            autoStartLoad: true,
-          });
+          const hls = new Hls();
 
           hls.loadSource(source);
           hls.attachMedia(video);
 
-          hls.on(Hls.Events.MANIFEST_PARSED, (_, data) => {
-            const availableQualities = data.levels
-              .map((l) => l.height)
-              .sort((a, b) => b - a);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
             video.play().catch(() => {});
-            setupPlayer(hls, availableQualities);
+            setupPlayer(hls);
           });
 
-          // 🔥 AUTO RECOVER ON ERROR
           hls.on(Hls.Events.ERROR, function (_, data) {
             if (data.fatal) {
               hls.startLoad();
