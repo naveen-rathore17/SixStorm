@@ -1,169 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Star Sports English | SixStorm </title>
+<link rel="icon" type="image/png" href="/images/favicon2.png" />
+<link rel="shortcut icon" href="/images/favicon2.png" />
+<meta name="referrer" content="no-referrer">
+<script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"/>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-L7VPXZYQPN"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
-<title><%= title %></title>
+  gtag('config', 'G-L7VPXZYQPN');
+</script>
+  <style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
 
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+.shaka-video-container{
+position:fixed;
+inset:0;
+background:#000;
+display:flex;
+align-items:center;
+justify-content:center;
+}
 
+video{
+width:100%;
+height:100%;
+object-fit:contain;
+background:#000;
+}
+
+.custom-watermark{
+position:absolute;
+z-index:40;
+pointer-events:none;
+top:65%;
+left:6%;
+transform:translateY(-50%);
+font-size:11px;
+font-weight:600;
+color:rgba(255,255,255,0.12);
+}
+
+/* --- Updated Modern Blocker Styles --- */
+.block-overlay{
+position:fixed;
+inset:0;
+z-index:99999;
+display:flex;
+align-items:center;
+justify-content:center;
+background:radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+text-align:center;
+}
+
+.block-box{
+padding:40px;
+max-width:500px;
+width:90%;
+background:rgba(20, 20, 20, 0.95);
+border-radius:16px;
+border:1px solid rgba(255, 255, 255, 0.1);
+box-shadow:0 20px 50px rgba(0,0,0,0.5);
+animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.block-title{
+font-size:42px;
+font-weight:800;
+color:#ffffff;
+text-transform:uppercase;
+letter-spacing:2px;
+margin-bottom:20px;
+text-shadow:0 0 10px rgba(255, 0, 0, 0.3);
+}
+
+.block-sub{
+font-size:14px;
+font-weight:500;
+color:rgba(255, 255, 255, 0.6);
+line-height:1.6;
+}
+
+/* Icon hidden as requested, but keeping structure if needed later */
+.block-icon{ display: none; }
+.block-note{ display: none; }
+
+@media(max-width:700px){
+.custom-watermark{font-size:9px;top:60%;left:16%}
+.block-title{font-size:28px}
+.block-box{padding:25px}
+.block-sub{font-size:12px}
+}
+</style>
 </head>
+<body>
 
-<body class="bg-black text-white min-h-screen flex flex-col items-center">
-
-<!-- HEADER -->
-
-<div class="w-full max-w-5xl text-center p-4">
-
-<h1 class="text-3xl font-bold text-red-500">
-SixStorm
-</h1>
-
-<p class="text-gray-400">
-Watch IPL 2026 Live Streaming
-</p>
-
+<div class="shaka-video-container" id="player-container">
+<video id="video" autoplay muted playsinline preload="metadata"></video>
+<div class="custom-watermark"> </div>
 </div>
-
-
-<!-- PLAYER -->
-
-<div class="w-full max-w-5xl px-4">
-
-<div class="relative bg-black rounded-xl overflow-hidden">
-
-<!-- Loader -->
-
-<div id="loader"
-class="absolute inset-0 flex items-center justify-center bg-black z-10">
-
-<p class="text-white text-lg animate-pulse">
-Loading Stream...
-</p>
-
-</div>
-
-<video
-id="video"
-class="w-full aspect-video"
-controls
-playsinline
-muted
-></video>
-
-</div>
-
-</div>
-
-
-<!-- BUTTON -->
-
-<div class="mt-6">
-
-<a href="/"
-class="bg-red-600 px-6 py-3 rounded-full">
-Home
-</a>
-
-</div>
-
 
 <script>
+(function(){
+  
+  function isSandboxedEnv(){
+    try {
+      if (window.self === window.top) return false;
+      if (window.frameElement && window.frameElement.hasAttribute("sandbox")) {
+        return true;
+      }
+      try {
+        document.domain = document.domain;
+        if (window.frameElement && !window.frameElement.getAttribute("sandbox")) {
+             return false;
+        }
+      } catch (e) {
+         return true;
+      }
+      return false;
+    } catch(e) {
+      return true;
+    }
+  }
+  function triggerBlockScreen(title, message){
+    const container = document.getElementById("player-container");
+    const video = document.getElementById("video");
+    
+    try {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+    } catch(e){}
 
-const video = document.getElementById("video");
-const loader = document.getElementById("loader");
+    const overlay = document.createElement("div");
+    overlay.className = "block-overlay";
+    overlay.id = "sandbox-block-display";
+    overlay.innerHTML = `
+      <div class="block-box">
+        <div class="block-title">${title}</div>
+        <div class="block-sub">${message}</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    container.style.display = 'none';
+  }
+  if(isSandboxedEnv()){
 
-const videoSrc = "<%- stream %>";
+    triggerBlockScreen('Disable Sandbox', 'Opening Chrome Browser Only & Disable Ad blocker');
+    return;
+  }
+  const CONFIG={
+    streamUrl:"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_BTS/WDVLive/index.mpd",
+    keyId:"965dc2ddb1d85138ad787999a7f30ca5",
+    key:"859695076e67fe961836b564db6d689c",
+    cookieUrl:"https://allrounderid2.pages.dev/api/star-1.json"
+  };
 
-let hls;
+  document.addEventListener("DOMContentLoaded",async()=>{
 
-function startStream(){
+    shaka.polyfill.installAll();
+    if(!shaka.Player.isBrowserSupported()) return;
 
-if (Hls.isSupported()) {
+    const video=document.getElementById("video");
+    const container=document.getElementById("player-container");
 
-hls = new Hls({
+    video.muted=true;
 
-maxBufferLength: 30,
-maxMaxBufferLength: 60,
+    const player=new shaka.Player();
+    await player.attach(video);
 
-liveSyncDurationCount: 3,
-liveMaxLatencyDurationCount: 10,
+    const ui=new shaka.ui.Overlay(player,container,video);
 
-enableWorker: true,
-lowLatencyMode: true
-
+    ui.configure({
+  addBigPlayButton: true,
+  controlPanelElements: [
+    "mute",           // First - volume/mute button
+    "play_pause",     // Second - play/pause button  
+    "time_and_duration", // Third - timeline timings (00:00 / 00:00)
+    "spacer",
+    "quality",
+    "picture_in_picture",
+    "fullscreen"
+  ],
+  seekBarColors: {
+    base: "white",
+    buffered: "red", 
+    played: "green"
+  }
 });
 
-hls.loadSource(videoSrc);
-hls.attachMedia(video);
+    player.configure({
+      drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
+      manifest:{defaultPresentationDelay:5},
+      streaming:{
+        lowLatencyMode:true,
+        bufferingGoal:10,
+        rebufferingGoal:2,
+        safeSeekOffset:5
+      }
+    });
 
-hls.on(Hls.Events.MANIFEST_PARSED,function(){
+    let cookieValue="";
 
-loader.style.display="none";
+    try{
+      const response=await fetch(CONFIG.cookieUrl,{cache:"no-store"});
+      const data=await response.json();
+      cookieValue=data.cookie||"";
+    }catch(e){}
 
-video.play().catch(()=>{
+    if(cookieValue){
+      player.getNetworkingEngine().registerRequestFilter((type,request)=>{
+        request.headers["Referer"]="https://www.jiotv.com/";
+        request.headers["User-Agent"]="plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+        request.headers["Cookie"]=cookieValue;
 
-video.muted=true;
-video.play();
+        let urlCookie=cookieValue.startsWith("__hdnea__=")?cookieValue.substring(10):cookieValue;
 
-});
+        if((type===shaka.net.NetworkingEngine.RequestType.MANIFEST||
+        type===shaka.net.NetworkingEngine.RequestType.SEGMENT)&&
+        !request.uris[0].includes("__hdnea__")){
+          const sep=request.uris[0].includes("?")?"&":"?";
+          request.uris[0]+=sep+"__hdnea__="+urlCookie;
+        }
+      });
+    }
 
-});
+    try{
+      await player.load(CONFIG.streamUrl);
+      video.play().catch(()=>{});
+    }catch(e){}
 
-hls.on(Hls.Events.ERROR,function(event,data){
+    video.addEventListener("play",()=>{
+      video.muted=false;
+    });
 
-console.log("HLS ERROR:",data);
-
-if(data.fatal){
-
-switch(data.type){
-
-case Hls.ErrorTypes.NETWORK_ERROR:
-console.log("Network Error -> Reloading");
-hls.startLoad();
-break;
-
-case Hls.ErrorTypes.MEDIA_ERROR:
-console.log("Media Error -> Recovering");
-hls.recoverMediaError();
-break;
-
-default:
-console.log("Fatal Error -> Restarting");
-setTimeout(startStream,2000);
-
-}
-
-}
-
-});
-
-}
-
-else if(video.canPlayType("application/vnd.apple.mpegurl")){
-
-video.src = videoSrc;
-
-video.addEventListener("loadedmetadata",function(){
-
-loader.style.display="none";
-
-video.play();
-
-});
-
-}
-
-}
-
-startStream();
-
+  });
+})();
 </script>
-
-
+ 
 </body>
-</html>
+</html> 

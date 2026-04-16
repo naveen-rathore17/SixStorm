@@ -132,8 +132,8 @@ res.render("sport");
 app.get("/starsport-2",(req,res)=>{
 res.render("sport-1");
 });
-app.get("/starsport-1",(req,res)=>{
-res.render("redirect");
+app.get("/star-sport-1",(req,res)=>{
+res.render("webcric");
 });
 
 // app.get("/star_sport_live_Hd",(req,res)=>{
