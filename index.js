@@ -130,7 +130,7 @@ app.get("/star_sport_1_live_HD_ipl",(req,res)=>{
 res.render("sport");
 });
 app.get("/starsport-2",(req,res)=>{
-res.render("sport-1");
+res.render("sport-2");
 });
 app.get("/star-sport-1",(req,res)=>{
 res.render("webcric");
