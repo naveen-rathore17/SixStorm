@@ -1,317 +1,514 @@
 <%- include("partials/header") %>
 
-  <body
-    class="bg-gradient-to-br from-[#0f172a] via-[#020617] to-[#111827] min-h-screen flex flex-col text-white"
-  >
-    <!-- NAVBAR -->
+<body class="min-h-screen flex flex-col text-white overflow-x-hidden" style="background: #020617;">
 
-    <!-- NAVBAR -->
-<nav class="bg-[#020617]/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-50 shadow-xl">
-  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 
-    <!-- Logo Left -->
-    <a href="/" class="text-2xl md:text-3xl font-bold flex-shrink-0 flex items-center gap-1">
-      <span class="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">Six</span>
-      <span class="text-white">Storm</span>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #020617; font-family: 'Outfit', sans-serif; }
+
+  /* ── BACKGROUND ── */
+  .bg-grid {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(250,204,21,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(250,204,21,0.025) 1px, transparent 1px);
+    background-size: 55px 55px;
+    pointer-events: none; z-index: 0;
+  }
+  .orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(100px); pointer-events: none; z-index: 0;
+    animation: orbFloat 9s ease-in-out infinite;
+  }
+  .orb-1 { width: 420px; height: 420px; background: rgba(250,204,21,0.055); top: -120px; left: -80px; }
+  .orb-2 { width: 340px; height: 340px; background: rgba(239,68,68,0.045); bottom: 80px; right: -80px; animation-delay: 3s; }
+  .orb-3 { width: 260px; height: 260px; background: rgba(59,130,246,0.035); top: 45%; left: 48%; animation-delay: 6s; }
+  @keyframes orbFloat {
+    0%,100% { transform: translate(0,0) scale(1); }
+    50%      { transform: translate(18px,-26px) scale(1.04); }
+  }
+
+  /* ── NAVBAR ── */
+  .navbar {
+    background: rgba(2,6,23,0.88);
+    backdrop-filter: blur(22px);
+    border-bottom: 1px solid rgba(250,204,21,0.1);
+    position: sticky; top: 0; z-index: 200;
+  }
+  .nav-inner {
+    max-width: 1280px; margin: 0 auto;
+    padding: 0 20px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { text-decoration: none; display: flex; align-items: center; gap: 1px; }
+  .nav-logo-six {
+    font-family: 'Bebas Neue', cursive; font-size: 1.85rem; letter-spacing: 2px;
+    background: linear-gradient(135deg, #facc15, #f97316);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .nav-logo-storm {
+    font-family: 'Bebas Neue', cursive; font-size: 1.85rem; letter-spacing: 2px; color: #fff;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-link {
+    color: rgba(255,255,255,0.6); font-size: 0.82rem; font-weight: 600;
+    letter-spacing: 1.2px; text-transform: uppercase; text-decoration: none;
+    position: relative; padding-bottom: 3px; transition: color 0.2s;
+  }
+  .nav-link::after {
+    content: ''; position: absolute; bottom: 0; left: 0;
+    width: 0; height: 1.5px; background: #facc15; transition: width 0.25s;
+  }
+  .nav-link:hover { color: #facc15; }
+  .nav-link:hover::after { width: 100%; }
+
+  /* Hamburger */
+  .hamburger {
+    display: none; flex-direction: column; justify-content: center;
+    gap: 5px; cursor: pointer; padding: 6px; background: transparent;
+    border: none; z-index: 300;
+  }
+  .hamburger span {
+    display: block; width: 24px; height: 2px;
+    background: #fff; border-radius: 2px;
+    transition: all 0.3s ease; transform-origin: center;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  /* Mobile drawer */
+  .mobile-menu {
+    display: none;
+    position: fixed; top: 60px; left: 0; right: 0;
+    background: rgba(2,6,23,0.97); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(250,204,21,0.1);
+    z-index: 190; max-height: 0; overflow: hidden;
+    transition: max-height 0.38s ease, padding 0.3s ease;
+  }
+  .mobile-menu.open { max-height: 400px; padding: 10px 0 18px; }
+  .mobile-menu a {
+    display: block; padding: 13px 26px;
+    color: rgba(255,255,255,0.65); font-size: 0.9rem; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none;
+    border-left: 3px solid transparent; transition: all 0.2s;
+  }
+  .mobile-menu a:hover { color: #facc15; background: rgba(250,204,21,0.05); border-left-color: #facc15; }
+
+  /* ── TICKER ── */
+  .ticker-bar {
+    background: rgba(250,204,21,0.05);
+    border-bottom: 1px solid rgba(250,204,21,0.1);
+    overflow: hidden; padding: 9px 0; position: relative;
+  }
+  .ticker-bar::before, .ticker-bar::after {
+    content: ''; position: absolute; top: 0; bottom: 0;
+    width: 60px; z-index: 2; pointer-events: none;
+  }
+  .ticker-bar::before { left: 0; background: linear-gradient(90deg,#020617,transparent); }
+  .ticker-bar::after  { right: 0; background: linear-gradient(-90deg,#020617,transparent); }
+  .ticker-inner { display: flex; white-space: nowrap; animation: tickerMove 28s linear infinite; }
+  .ticker-item {
+    font-size: 0.72rem; color: rgba(255,255,255,0.45);
+    letter-spacing: 1px; padding: 0 28px;
+    border-right: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+  }
+  .ticker-item b { color: #facc15; font-weight: 600; }
+  @keyframes tickerMove {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── LAYOUT ── */
+  .main-content { position: relative; z-index: 1; flex: 1; }
+  .container {
+    max-width: 1100px; margin: 0 auto;
+    padding: 36px 16px 60px;
+    display: flex; flex-direction: column; gap: 44px;
+  }
+
+  /* ── SLIDER ── */
+  .slider-wrap {
+    position: relative; border-radius: 20px; overflow: hidden;
+    border: 1px solid rgba(250,204,21,0.14);
+    box-shadow: 0 0 50px rgba(250,204,21,0.07), 0 32px 64px rgba(0,0,0,0.55);
+  }
+  .slider-img {
+    width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+  .slider-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(2,6,23,0.92) 0%, rgba(2,6,23,0.25) 55%, transparent 100%);
+  }
+  .slide-content {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: clamp(14px,4vw,30px) clamp(14px,4vw,30px) clamp(12px,3vw,24px);
+  }
+  .slide-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(250,204,21,0.1); border: 1px solid rgba(250,204,21,0.28);
+    color: #facc15; font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 100px; margin-bottom: 8px;
+  }
+  .slide-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #facc15; flex-shrink:0; }
+  .slide-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.3rem, 4.5vw, 2.8rem);
+    letter-spacing: 2px; line-height: 1; color: #fff;
+    text-shadow: 0 3px 20px rgba(0,0,0,0.7);
+  }
+  .slide-desc {
+    font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+    color: rgba(255,255,255,0.55); margin-top: 5px; font-weight: 400;
+  }
+  .slide-dots {
+    position: absolute; bottom: 14px; right: 16px;
+    display: flex; gap: 5px; align-items: center;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 100px;
+    background: rgba(255,255,255,0.22); cursor: pointer;
+    transition: all 0.3s; border: 1px solid rgba(255,255,255,0.08);
+  }
+  .dot.active { background: #facc15; width: 22px; box-shadow: 0 0 8px #facc15; }
+
+  /* ── HEADING ── */
+  .section-heading { text-align: center; }
+  .gold-line {
+    width: 70px; height: 2px; margin: 0 auto;
+    background: linear-gradient(90deg, transparent, #facc15, transparent);
+  }
+  .heading-main {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(2.2rem, 7vw, 4.5rem);
+    letter-spacing: 5px; line-height: 1; margin: 16px 0 10px;
+  }
+  .heading-main .yellow {
+    background: linear-gradient(135deg,#facc15,#f97316);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .heading-sub {
+    font-size: clamp(0.68rem,1.6vw,0.86rem);
+    color: rgba(255,255,255,0.38); letter-spacing: 2px; text-transform: uppercase; font-weight: 400;
+  }
+
+  /* ── MATCH CARD ── */
+  .match-card-outer {
+    background: linear-gradient(135deg,rgba(250,204,21,0.14),rgba(239,68,68,0.07),rgba(59,130,246,0.05));
+    padding: 1.5px; border-radius: 26px;
+    box-shadow: 0 0 36px rgba(250,204,21,0.06), 0 24px 50px rgba(0,0,0,0.45);
+    max-width: 460px; width: 100%; margin: 0 auto;
+  }
+  .match-card-inner {
+    background: linear-gradient(155deg,#0f172a,#020617 60%,#0f172a);
+    border-radius: 24px;
+    padding: clamp(20px,4vw,32px) clamp(16px,4vw,28px);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .match-card-inner::before {
+    content: ''; position: absolute;
+    top: -50px; left: 50%; transform: translateX(-50%);
+    width: 280px; height: 280px;
+    background: radial-gradient(circle,rgba(250,204,21,0.055) 0%,transparent 70%);
+    pointer-events: none;
+  }
+  .live-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(239,68,68,0.09); border: 1px solid rgba(239,68,68,0.28);
+    color: #f87171; font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 13px; border-radius: 100px;
+    animation: pulseBadge 2s ease-in-out infinite;
+  }
+  .live-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #f87171; flex-shrink:0; }
+  @keyframes pulseBadge {
+    0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+    50%      { opacity:.8; box-shadow: 0 0 0 5px rgba(239,68,68,0); }
+  }
+  .match-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.2rem,3vw,1.7rem);
+    letter-spacing: 3px; color: #facc15; margin: 12px 0;
+  }
+  .teams-row {
+    display: flex; justify-content: center; align-items: center;
+    gap: clamp(16px,5vw,36px); margin: 18px 0;
+  }
+  .team-block { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+  .team-ring {
+    width: clamp(56px,12vw,72px); height: clamp(56px,12vw,72px);
+    border-radius: 50%; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.09);
+    display: flex; align-items: center; justify-content: center; padding: 8px;
+    transition: all 0.3s;
+  }
+  .team-ring:hover { border-color: rgba(250,204,21,0.38); box-shadow: 0 0 18px rgba(250,204,21,0.1); transform: scale(1.04); }
+  .team-ring img { width: 100%; height: 100%; object-fit: contain; }
+  .team-name { font-size: clamp(0.78rem,2.5vw,1rem); font-weight: 700; letter-spacing: 0.5px; }
+  .vs-pill {
+    background: linear-gradient(135deg,#dc2626,#b91c1c); color: #fff;
+    font-family: 'Bebas Neue', cursive; font-size: 1.1rem; letter-spacing: 3px;
+    padding: 7px 16px; border-radius: 100px;
+    box-shadow: 0 0 18px rgba(220,38,38,0.38); flex-shrink:0;
+  }
+  .match-info { font-size: clamp(0.73rem,1.8vw,0.82rem); color: rgba(255,255,255,0.45); line-height: 1.9; }
+  .match-info strong { color: rgba(255,255,255,0.82); font-weight: 600; }
+  .countdown-box {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.5rem,5vw,2rem); letter-spacing: 4px;
+    color: #facc15; background: rgba(250,204,21,0.045);
+    border: 1px solid rgba(250,204,21,0.14); border-radius: 12px;
+    padding: 10px 18px; margin-top: 10px;
+    text-shadow: 0 0 18px rgba(250,204,21,0.28);
+  }
+
+  /* ── BUTTONS ── */
+  .btn-section { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .btn {
+    display: inline-block; width: clamp(220px,60vw,280px);
+    padding: 13px 28px; font-family: 'Outfit', sans-serif;
+    font-size: 0.88rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #fff; text-decoration: none;
+    border-radius: 100px; border: none; cursor: pointer;
+    transition: all 0.3s; position: relative; overflow: hidden; text-align: center;
+  }
+  .btn::before {
+    content: ''; position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg,transparent,rgba(255,255,255,0.14),transparent);
+    transition: left 0.45s;
+  }
+  .btn:hover::before { left: 100%; }
+  .btn:hover { transform: translateY(-3px) scale(1.03); }
+  .btn-blue { background: linear-gradient(135deg,#0047AB,#1E90FF,#00BFFF); box-shadow: 0 8px 28px rgba(0,71,171,0.38); }
+  .btn-blue:hover { box-shadow: 0 14px 38px rgba(0,71,171,0.5); }
+  .btn-red  { background: linear-gradient(135deg,#dc2626,#ef4444,#b91c1c); box-shadow: 0 8px 28px rgba(220,38,38,0.38); }
+  .btn-red:hover  { box-shadow: 0 14px 38px rgba(220,38,38,0.5); }
+
+  /* ── ANIMATIONS ── */
+  .fade-up { opacity: 0; transform: translateY(26px); animation: fadeUp 0.65s ease forwards; }
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+  .d1{animation-delay:.08s} .d2{animation-delay:.2s} .d3{animation-delay:.34s} .d4{animation-delay:.48s}
+
+  .no-match { text-align:center; color:rgba(255,255,255,0.28); font-size:0.88rem; letter-spacing:1px; padding:40px 0; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .mobile-menu { display: block; }
+    .container { padding: 22px 12px 48px; gap: 32px; }
+    .orb-1 { width: 250px; height: 250px; }
+    .orb-2 { width: 190px; height: 190px; }
+    .orb-3 { display: none; }
+  }
+  @media (min-width: 641px) {
+    .hamburger { display: none !important; }
+    .mobile-menu { display: none !important; }
+  }
+</style>
+
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <span class="nav-logo-six">Six</span>
+      <span class="nav-logo-storm">Storm</span>
     </a>
-
-    <!-- Navigation Links Right -->
-    <div class="flex gap-4 md:gap-8 text-xs md:text-base font-semibold">
-      <a href="/help" class="hover:text-red-400 transition">Help</a>
-      <a href="/legal" class="hover:text-red-400 transition">Legal</a>
-      <a href="/about-us" class="hover:text-red-400 transition">About</a>
-      <a href="/points" class="hover:text-red-400 transition">Points</a>
-      <a href="/contact-us" class="hover:text-red-400 transition">Contact</a>
+    <div class="nav-links">
+      <a href="/help"       class="nav-link">Help</a>
+      <a href="/legal"      class="nav-link">Legal</a>
+      <a href="/about-us"   class="nav-link">About</a>
+      <a href="/points"     class="nav-link">Points</a>
+      <a href="/contact-us" class="nav-link">Contact</a>
     </div>
-
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
-    <!-- MAIN -->
 
-    <div class="flex-grow max-w-7xl mx-auto px-4 py-8 space-y-10">
-      <!-- SLIDER -->
-
-      <div
-        class="relative w-full max-w-6xl mx-auto aspect-video overflow-hidden rounded-3xl shadow-2xl border border-white/20"
-      >
-        <img
-          id="slider"
-          class="w-full h-full object-cover transition duration-700"
-        />
-
-        <div
-          class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
-        ></div>
-
-        <div class="absolute bottom-6 left-6 md:bottom-10 md:left-10 max-w-xl">
-          <h2
-            id="slideTitle"
-            class="text-lg md:text-3xl font-bold text-white"
-          ></h2>
-
-          <p id="slideDesc" class="text-xs md:text-lg text-gray-300 mt-2"></p>
-        </div>
-
-        <div
-          id="dots"
-          class="absolute bottom-4 w-full flex justify-center gap-3"
-        ></div>
-      </div>
-
-      <!-- PAGE HEADING -->
-
-      <div class="text-center space-y-4">
-        <h1 class="text-3xl md:text-6xl font-extrabold tracking-wide">
-          <span class="text-yellow-400">CRICKET</span>
-          <span class="text-white">HUB</span>
-        </h1>
-
-        <h2 class="text-sm md:text-2xl text-gray-300 font-semibold">
-          IPL • ICC T20 World Cup • Match Updates & Viewing Access
-        </h2>
-      </div>
-
-      <!-- MATCH CARD -->
-
-       <% if(matches && matches.length > 0){ %>
-
-<% matches.forEach(match => { %>
-
-<div class="flex justify-center mt-6">
-  <div
-    class="w-full max-w-md bg-gradient-to-br from-[#1e293b] via-[#020617] to-[#111827] p-[2px] rounded-3xl shadow-2xl"
-  >
-    <div
-      class="bg-[#020617] rounded-3xl p-6 text-center space-y-6 border border-white/10"
-    >
-      <p class="text-red-400 font-semibold animate-pulse">
-        🔴 Upcoming Live Match
-      </p>
-<h2 class="text-xl md:text-2xl font-bold text-yellow-400 tracking-wide">
-  IPL <%= match.matchDesc %>
-</h2>
-
-      <div class="flex justify-center items-center gap-8">
-        <div class="flex flex-col items-center gap-2">
-          <img
-            src="<%= match.team1Img %>"
-            class="w-14 h-14 object-contain"
-          />
-
-          <span class="text-lg font-bold"><%= match.team1 %></span>
-        </div>
-
-        <div
-          class="px-4 py-2 rounded-full bg-red-600 text-white font-bold shadow-lg"
-        >
-          VS
-        </div>
-
-        <div class="flex flex-col items-center gap-2">
-          <img
-            src="<%= match.team2Img %>"
-            class="w-14 h-14 object-contain"
-          />
-
-          <span class="text-lg font-bold"><%= match.team2 %></span>
-        </div>
-      </div>
-
-      <div class="text-gray-300 text-sm leading-relaxed">
-        📅 <span class="text-white font-semibold"><%= match.date %></span>
-        <br />
-
-        🏟
-        <span class="text-white font-semibold">
-          <%= match.venue %>, <%= match.city %>
-        </span>
-      </div>
-
-  <div
-  class="countdown text-2xl font-mono text-yellow-400 bg-black/50 py-3 rounded-lg border border-yellow-400/20"
-  data-start="<%= match.startDate %>"
->
+<!-- Mobile Drawer -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/help">Help</a>
+  <a href="/legal">Legal</a>
+  <a href="/about-us">About</a>
+  <a href="/points">Points</a>
+  <a href="/contact-us">Contact</a>
 </div>
-    </div>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <span class="ticker-item">🏏 IPL 2026 <b>LIVE NOW</b></span>
+    <span class="ticker-item">ICC T20 World Cup <b>Updates</b></span>
+    <span class="ticker-item">SRH vs DC — <b>Today</b></span>
+    <span class="ticker-item">RCB in <b>Top 3</b></span>
+    <span class="ticker-item">Abhishek <b>74 off 28</b> vs PBKS</span>
+    <span class="ticker-item">Watch <b>Star Sport 1</b> — Free</span>
+    <span class="ticker-item">🏏 IPL 2026 <b>LIVE NOW</b></span>
+    <span class="ticker-item">ICC T20 World Cup <b>Updates</b></span>
+    <span class="ticker-item">SRH vs DC — <b>Today</b></span>
+    <span class="ticker-item">RCB in <b>Top 3</b></span>
+    <span class="ticker-item">Abhishek <b>74 off 28</b> vs PBKS</span>
+    <span class="ticker-item">Watch <b>Star Sport 1</b> — Free</span>
   </div>
 </div>
 
-<% }) %>
+<!-- MAIN -->
+<div class="main-content flex-grow">
+  <div class="container">
 
-<% } else { %>
-
-<p class="text-center text-gray-400 mt-10">
-No upcoming IPL matches available
-</p>
-
-<% } %>
-
-      <!-- WATCH BUTTON -->
-
-      <div class="flex flex-col items-center gap-6">
-        <a href="/star_sport_1_live_HD_ipl">
-          <button
-            class="w-[260px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-[#0047AB] via-[#1E90FF] to-[#00BFFF] hover:scale-110 transition duration-300 shadow-xl"
-          >
-            ▶ Watch Live
-          </button>
-        </a>
+    <!-- SLIDER -->
+    <div class="fade-up d1">
+      <div class="slider-wrap">
+        <img id="slider" class="slider-img" alt="IPL Slide" />
+        <div class="slider-overlay"></div>
+        <div class="slide-content">
+          <div class="slide-badge"><span class="slide-badge-dot"></span>Featured</div>
+          <h2 id="slideTitle" class="slide-title"></h2>
+          <p id="slideDesc" class="slide-desc"></p>
+        </div>
+        <div class="slide-dots" id="dots"></div>
       </div>
-      <!-- <div class="flex flex-col items-center gap-6">
-        <a href="/starsport-2">
-          <button
-            class="w-[260px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-[#0047AB] via-[#1E90FF] to-[#00BFFF] hover:scale-110 transition duration-300 shadow-xl"
-          >
-            ▶ Watch Live
-          </button>
-        </a>
-      </div> -->
-     
-      <div class="flex flex-col items-center gap-6 ">
-  <a href="/star-sport-1">
-    <button
-      class="w-[260px] py-3 text-lg rounded-full font-bold text-white bg-gradient-to-r from-red-600 via-red-500 to-red-700 hover:scale-110 transition duration-300 shadow-xl"
-    >
-      ▶ Star Sport 1 [English]
-    </button>
-  </a>
+    </div>
+
+    <!-- HEADING -->
+    <div class="fade-up d2 section-heading">
+      <div class="gold-line"></div>
+      <h1 class="heading-main">
+        <span class="yellow">Cricket</span><span style="color:#fff;"> Hub</span>
+      </h1>
+      <p class="heading-sub">IPL &bull; ICC T20 World Cup &bull; Match Updates &amp; Viewing Access</p>
+      <div class="gold-line" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- MATCH CARDS -->
+    <div class="fade-up d3">
+      <% if(matches && matches.length > 0){ %>
+        <% matches.forEach(match => { %>
+          <div style="margin-bottom:22px;">
+            <div class="match-card-outer">
+              <div class="match-card-inner">
+                <span class="live-badge">
+                  <span class="live-badge-dot"></span>Upcoming Live
+                </span>
+                <p class="match-title">IPL <%= match.matchDesc %></p>
+                <div class="teams-row">
+                  <div class="team-block">
+                    <div class="team-ring"><img src="<%= match.team1Img %>" alt="<%= match.team1 %>" /></div>
+                    <span class="team-name"><%= match.team1 %></span>
+                  </div>
+                  <div class="vs-pill">VS</div>
+                  <div class="team-block">
+                    <div class="team-ring"><img src="<%= match.team2Img %>" alt="<%= match.team2 %>" /></div>
+                    <span class="team-name"><%= match.team2 %></span>
+                  </div>
+                </div>
+                <div class="match-info">
+                  📅 &nbsp;<strong><%= match.date %></strong><br/>
+                  🏟️ &nbsp;<strong><%= match.venue %>, <%= match.city %></strong>
+                </div>
+                <div class="countdown countdown-box" data-start="<%= match.startDate %>"></div>
+              </div>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p class="no-match">No upcoming IPL matches available</p>
+      <% } %>
+    </div>
+
+    <!-- WATCH BUTTONS -->
+    <div class="fade-up d4 btn-section">
+      <a href="/star_sport_1_live_HD_ipl" class="btn btn-blue">▶ Watch Live HD</a>
+      <a href="/star-sport-1" class="btn btn-red">▶ Star Sport 1 [English]</a>
+    </div>
+
+  </div>
 </div>
 
-    </div>
-    
+<%- include("partials/footer") %>
 
-    <!-- FOOTER -->
+<script>
+  // HAMBURGER
+  const hamburger = document.getElementById("hamburger");
+  const mobileMenu = document.getElementById("mobileMenu");
+  hamburger.addEventListener("click", () => {
+    hamburger.classList.toggle("open");
+    mobileMenu.classList.toggle("open");
+  });
+  mobileMenu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+    hamburger.classList.remove("open");
+    mobileMenu.classList.remove("open");
+  }));
 
-    <%- include("partials/footer") %>
+  // SLIDER
+  const slides = [
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2803/1776584212803-i", title: "SRH vs DC", desc: "Hyderabad Face Delhi in the TATA IPL 2026" },
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/8580/1776522998580-i", title: "Last Over Drama!", desc: "15 Off 5! Miller Turns Hero for DC!" },
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/5753/1774882555753-i", title: "TATA IPL 2026", desc: "Watch the Biggest Cricket League – IPL" },
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/6372/1774719566372-i", title: "RCB Ready for Second Title", desc: "Can the king's soldiers lift another IPL trophy this season?" },
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2251/1775906772251-i", title: "Abhishek's 28-ball 74 vs PBKS", desc: "Top knocks!" },
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/8776/1775331088776-i", title: "Rizvi Rises as DC Outclass MI!", desc: "Pandya's Paltan!" },
+    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2526/1772995532526-i", title: "India Winning Moment", desc: "Team India Lifts Their Third T20 World Cup Trophy!" },
+  ];
 
-    <script>
-      const slides = [
-        {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2803/1776584212803-i",
-          title: "SRH vs DC",
-          desc: "Hyedrabad Face Delhi in the TATA IPL 2026",
-        },
-        //  {
-        //   img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/4730/1776490294730-i",
-        //   title: "PBKS vs LSG",
-        //   desc: "Punjab Face Lucknow in the TATA IPL 2026",
-        // },
+  let idx = 0;
+  const sliderEl = document.getElementById("slider");
+  const titleEl  = document.getElementById("slideTitle");
+  const descEl   = document.getElementById("slideDesc");
+  const dotsEl   = document.getElementById("dots");
 
-         {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/8580/1776522998580-i",
-          title: "Last Over Drama!",
-          desc: "15 Off 5! Miller Turns Hero for DC!",
-        },
-             
-        {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/5753/1774882555753-i",
-          title: "TATA IPL 2026 ",
-          desc: "Watch the Biggest Cricket League – IPL ",
-        },
-        {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/6372/1774719566372-i",
-          title: "RCB Ready for Second Title",
-          desc: "Can the king’s soldiers lift another IPL trophy this season?",
-        },
-        {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2251/1775906772251-i",
-          title: "Abhishek's 28-ball 74 vs PBKS",
-          desc: "Top knocks!",
-        },
-        {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/8776/1775331088776-i",
-          title: "Rizvi Rises as DC Outclass MI!",
-          desc: "Pandya's Paltan!",
-        },
-        {
-          img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2526/1772995532526-i",
-          title: "India Winning Moment",
-          desc: "Team India Lifts Their Third T20 World Cup Trophy!",
-        },
-      ];
+  slides.forEach((_, i) => {
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.onclick = () => { idx = i; showSlide(); };
+    dotsEl.appendChild(d);
+  });
 
-      let index = 0;
+  function showSlide() {
+    sliderEl.style.opacity = "0";
+    sliderEl.style.transform = "scale(1.03)";
+    setTimeout(() => {
+      sliderEl.src = slides[idx].img;
+      titleEl.innerText = slides[idx].title;
+      descEl.innerText  = slides[idx].desc;
+      sliderEl.style.opacity = "1";
+      sliderEl.style.transform = "scale(1)";
+    }, 200);
+    document.querySelectorAll(".dot").forEach((d,i) => d.classList.toggle("active", i===idx));
+  }
 
-      const slider = document.getElementById("slider");
-      const title = document.getElementById("slideTitle");
-      const desc = document.getElementById("slideDesc");
+  setInterval(() => { idx = (idx+1) % slides.length; showSlide(); }, 4000);
+  showSlide();
 
-      const dots = document.getElementById("dots");
-
-      slides.forEach((_, i) => {
-        const dot = document.createElement("div");
-
-        dot.className =
-          "w-3 h-3 bg-white/40 rounded-full cursor-pointer hover:bg-white";
-
-        dot.onclick = () => {
-          index = i;
-          showSlide();
-        };
-
-        dots.appendChild(dot);
-      });
-
-      function showSlide() {
-        slider.src = slides[index].img;
-        title.innerText = slides[index].title;
-        desc.innerText = slides[index].desc;
-
-        document.querySelectorAll("#dots div").forEach((dot, i) => {
-          dot.classList.remove("bg-white");
-          if (i === index) dot.classList.add("bg-white");
-        });
+  // COUNTDOWN
+  document.querySelectorAll(".countdown").forEach(box => {
+    const start = Number(box.dataset.start);
+    const t = setInterval(() => {
+      const dist = start - Date.now();
+      if (dist <= 0) {
+        clearInterval(t);
+        box.innerHTML = `<span style="background:#dc2626;padding:5px 18px;border-radius:100px;font-size:0.85rem;letter-spacing:3px;font-weight:700;">🔴 LIVE</span>`;
+        return;
       }
-      function nextSlide() {
-        index = (index + 1) % slides.length;
-        showSlide();
-      }
+      const h = Math.floor(dist/(1000*60*60));
+      const m = Math.floor((dist%(1000*60*60))/(1000*60));
+      const s = Math.floor((dist%(1000*60))/1000);
+      box.innerText = `${h}h ${m}m ${s}s`;
+    }, 1000);
+  });
+</script>
 
-      setInterval(nextSlide, 4000);
-
-      showSlide();
-      function toggleMenu() {
-        const menu = document.getElementById("mobileMenu");
-
-        if (menu.classList.contains("-right-[260px]")) {
-          menu.classList.remove("-right-[260px]");
-          menu.classList.add("right-0");
-        } else {
-          menu.classList.remove("right-0");
-          menu.classList.add("-right-[260px]");
-        }
-      }
-
-      // MATCH COUNTDOWN
-const countdowns = document.querySelectorAll(".countdown");
-
-countdowns.forEach((box) => {
-  const startTime = Number(box.dataset.start);
-
-  const timer = setInterval(() => {
-    const now = new Date().getTime();
-    const distance = startTime - now;
-
-    if (distance <= 0) {
-      clearInterval(timer);
-
-      box.innerHTML = `
-      <div class="flex justify-center">
-        <span class="bg-red-600 px-5 py-1 rounded-full text-sm font-bold animate-pulse">
-          🔴 LIVE
-        </span>
-      </div>`;
-      return;
-    }
-
-    const hours = Math.floor(distance / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    box.innerHTML = `${hours}h ${minutes}m ${seconds}s`;
-  }, 1000);
-});
-     
-    </script>
-  </body>
+</body>
 </html>

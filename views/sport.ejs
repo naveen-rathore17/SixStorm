@@ -5,121 +5,301 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Star Sports Hindi | SixStorm</title>
 <link rel="icon" type="image/png" href="/images/favicon2.png" />
-    <link rel="shortcut icon" href="/images/favicon2.png" />
+<link rel="shortcut icon" href="/images/favicon2.png" />
 <meta name="referrer" content="no-referrer">
 <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/shaka-player.ui.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shaka-player@4.16.2/dist/controls.css"/>
-
-
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-L7VPXZYQPN');
 </script>
-  <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif}
 
-.shaka-video-container{
-position:fixed;
-inset:0;
-background:#000;
-display:flex;
-align-items:center;
-justify-content:center;
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: #020617;
+  font-family: 'Outfit', sans-serif;
+  color: #fff;
+  overflow: hidden;
 }
 
-video{
-width:100%;
-height:100%;
-object-fit:contain;
-background:#000;
+/* ── BG GRID ── */
+.bg-grid {
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(250,204,21,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(250,204,21,0.025) 1px, transparent 1px);
+  background-size: 55px 55px;
+  pointer-events: none; z-index: 0;
+}
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(100px); pointer-events: none; z-index: 0;
+  animation: orbFloat 9s ease-in-out infinite;
+}
+.orb-1 { width: 420px; height: 420px; background: rgba(250,204,21,0.05); top: -100px; left: -80px; }
+.orb-2 { width: 300px; height: 300px; background: rgba(239,68,68,0.04); bottom: 60px; right: -60px; animation-delay: 4s; }
+@keyframes orbFloat {
+  0%,100% { transform: translate(0,0) scale(1); }
+  50%      { transform: translate(16px,-22px) scale(1.04); }
 }
 
-.custom-watermark{
-position:absolute;
-z-index:40;
-pointer-events:none;
-top:65%;
-left:6%;
-transform:translateY(-50%);
-font-size:11px;
-font-weight:600;
-color:rgba(255,255,255,0.12);
+/* ── WRAPPER ── */
+.page-wrapper {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  z-index: 1;
 }
 
-/* --- Updated Modern Blocker Styles --- */
-.block-overlay{
-position:fixed;
-inset:0;
-z-index:99999;
-display:flex;
-align-items:center;
-justify-content:center;
-background:radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
-text-align:center;
+/* ── NAVBAR ── */
+.navbar {
+  flex-shrink: 0;
+  background: rgba(2,6,23,0.9);
+  backdrop-filter: blur(22px);
+  border-bottom: 1px solid rgba(250,204,21,0.1);
+  z-index: 200;
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 20px; height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo { text-decoration: none; display: flex; align-items: center; }
+.nav-logo-six {
+  font-family: 'Bebas Neue', cursive; font-size: 1.75rem; letter-spacing: 2px;
+  background: linear-gradient(135deg, #facc15, #f97316);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.nav-logo-storm {
+  font-family: 'Bebas Neue', cursive; font-size: 1.75rem; letter-spacing: 2px; color: #fff;
+}
+.nav-right {
+  display: flex; align-items: center; gap: 16px;
+}
+.nav-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.3);
+  color: #f87171; font-size: 0.7rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 100px;
+  animation: pulseBadge 2s ease-in-out infinite;
+}
+.nav-badge-dot { width: 5px; height: 5px; border-radius: 50%; background: #f87171; flex-shrink:0; }
+@keyframes pulseBadge {
+  0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+  50%      { opacity:.8; box-shadow: 0 0 0 5px rgba(239,68,68,0); }
+}
+.nav-channel {
+  font-size: 0.78rem; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.45);
 }
 
-.block-box{
-padding:40px;
-max-width:500px;
-width:90%;
-background:rgba(20, 20, 20, 0.95);
-border-radius:16px;
-border:1px solid rgba(255, 255, 255, 0.1);
-box-shadow:0 20px 50px rgba(0,0,0,0.5);
-animation: fadeInUp 0.6s ease-out;
+/* ── STREAM BANNER ── */
+#streamBanner {
+  flex-shrink: 0;
+  background: linear-gradient(90deg, rgba(250,204,21,0.08), rgba(250,204,21,0.04), rgba(250,204,21,0.08));
+  border-bottom: 1px solid rgba(250,204,21,0.14);
+  padding: 10px 20px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px;
+  animation: bannerFadeIn 0.6s ease;
+  position: relative; overflow: hidden;
+}
+#streamBanner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(250,204,21,0.04), transparent);
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes bannerFadeIn {
+  from { opacity:0; transform: translateY(-10px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+.banner-icon {
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.banner-text {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.banner-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  letter-spacing: 3px; color: #facc15;
+  line-height: 1;
+}
+.banner-sub {
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+  color: rgba(255,255,255,0.45); letter-spacing: 1.5px;
+  text-transform: uppercase; font-weight: 500;
+}
+.banner-countdown {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(2,6,23,0.5);
+  border: 1px solid rgba(250,204,21,0.2);
+  border-radius: 100px; padding: 5px 14px;
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(0.9rem,2vw,1.1rem);
+  letter-spacing: 3px; color: #fff;
+  flex-shrink: 0;
+}
+.banner-countdown-label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.6rem; color: rgba(255,255,255,0.4);
+  letter-spacing: 1px; text-transform: uppercase;
+  font-weight: 600;
 }
 
+/* ── VIDEO AREA ── */
+.video-area {
+  flex: 1;
+  position: relative;
+  background: #000;
+  min-height: 0;
+}
+
+.shaka-video-container {
+  position: absolute; inset: 0;
+  background: #000;
+  display: flex; align-items: center; justify-content: center;
+}
+
+video {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+/* SixStorm watermark — untouched logic */
+.custom-watermark {
+  position: absolute;
+  z-index: 40;
+  pointer-events: none;
+  top: 65%;
+  left: 6%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.12);
+}
+
+/* ── BLOCK OVERLAY — logic untouched ── */
+.block-overlay {
+  position: fixed; inset: 0; z-index: 99999;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+  text-align: center;
+}
+.block-box {
+  padding: 44px 40px; max-width: 480px; width: 90%;
+  background: rgba(15,23,42,0.96);
+  border-radius: 20px;
+  border: 1px solid rgba(250,204,21,0.15);
+  box-shadow: 0 0 60px rgba(250,204,21,0.06), 0 30px 60px rgba(0,0,0,0.6);
+  animation: fadeInUp 0.55s ease-out;
+}
 @keyframes fadeInUp {
-from { opacity: 0; transform: translateY(30px); }
-to { opacity: 1; transform: translateY(0); }
+  from { opacity:0; transform: translateY(28px); }
+  to   { opacity:1; transform: translateY(0); }
 }
-
-.block-title{
-font-size:42px;
-font-weight:800;
-color:#ffffff;
-text-transform:uppercase;
-letter-spacing:2px;
-margin-bottom:20px;
-text-shadow:0 0 10px rgba(255, 0, 0, 0.3);
+.block-logo {
+  font-family: 'Bebas Neue', cursive; font-size: 1.6rem; letter-spacing: 2px;
+  margin-bottom: 20px; display: flex; justify-content: center; gap: 1px;
 }
-
-.block-sub{
-font-size:14px;
-font-weight:500;
-color:rgba(255, 255, 255, 0.6);
-line-height:1.6;
+.block-logo .six {
+  background: linear-gradient(135deg,#facc15,#f97316);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
 }
+.block-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  font-weight: 800; color: #ffffff;
+  text-transform: uppercase; letter-spacing: 3px;
+  margin-bottom: 14px;
+  text-shadow: 0 0 20px rgba(239,68,68,0.3);
+}
+.block-divider {
+  width: 60px; height: 2px; margin: 0 auto 16px;
+  background: linear-gradient(90deg,transparent,#facc15,transparent);
+}
+.block-sub {
+  font-size: clamp(0.8rem,2vw,0.9rem);
+  font-weight: 500; color: rgba(255,255,255,0.5);
+  line-height: 1.7; letter-spacing: 0.5px;
+}
+.block-icon { display: none; }
+.block-note { display: none; }
 
-/* Icon hidden as requested, but keeping structure if needed later */
-.block-icon{ display: none; }
-.block-note{ display: none; }
-
-@media(max-width:700px){
-.custom-watermark{font-size:9px;top:60%;left:16%}
-.block-title{font-size:28px}
-.block-box{padding:25px}
-.block-sub{font-size:12px}
+/* ── RESPONSIVE ── */
+@media (max-width: 640px) {
+  .nav-channel { display: none; }
+  #streamBanner { padding: 8px 14px; gap: 10px; }
+  .banner-countdown { padding: 4px 10px; }
+  .custom-watermark { font-size: 9px; top: 60%; left: 16%; }
+  .block-box { padding: 28px 22px; }
+  .block-title { font-size: 1.8rem; }
 }
 </style>
-    
 </head>
-    
+
 <body>
 
-<div class="shaka-video-container" id="player-container">
-<video id="video" autoplay muted playsinline preload="metadata"></video>
-<div class="custom-watermark"> </div>
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="page-wrapper">
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-six">Six</span>
+        <span class="nav-logo-storm">Storm</span>
+      </a>
+      <div class="nav-right">
+        <span class="nav-channel">Star Sports Hindi</span>
+        <span class="nav-badge">
+          <span class="nav-badge-dot"></span>Live
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- STREAM BANNER (auto-hides at 7:00 PM) -->
+  <div id="streamBanner">
+    <div class="banner-text">
+      <span class="banner-title">Starts at 7:30 PM</span>
+      <span class="banner-sub"> TATA IPL 2026 &bull; Live Stream</span>
+    </div>
+    <div class="banner-countdown">
+      <span class="banner-countdown-label">Live in</span>
+      <span id="bannerTimer">--:--:--</span>
+    </div>
+  </div>
+
+  <!-- VIDEO -->
+  <div class="video-area">
+    <div class="shaka-video-container" id="player-container">
+      <video id="video" autoplay muted playsinline preload="metadata"></video>
+      <div class="custom-watermark"> </div>
+    </div>
+  </div>
+
 </div>
 
+<!-- ── ALL ORIGINAL LOGIC — UNTOUCHED ── -->
 <script>
 (function(){
-  
   function isSandboxedEnv(){
     try {
       if (window.self === window.top) return false;
@@ -139,6 +319,7 @@ line-height:1.6;
       return true;
     }
   }
+
   function triggerBlockScreen(title, message){
     const container = document.getElementById("player-container");
     const video = document.getElementById("video");
@@ -154,20 +335,23 @@ line-height:1.6;
     overlay.id = "sandbox-block-display";
     overlay.innerHTML = `
       <div class="block-box">
+        <div class="block-logo"><span class="six">Six</span><span>Storm</span></div>
         <div class="block-title">${title}</div>
+        <div class="block-divider"></div>
         <div class="block-sub">${message}</div>
       </div>
     `;
     document.body.appendChild(overlay);
     container.style.display = 'none';
   }
-  if(isSandboxedEnv()){
 
+  if(isSandboxedEnv()){
     triggerBlockScreen('Disable Sandbox', 'Opening Chrome Browser Only & Disable Ad blocker');
     return;
   }
-  const CONFIG={
-    streamUrl:"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/WDVLive/index.mpd",
+
+   const CONFIG={
+    streamUrl:"https://jiotvpllive.cdn.jio.com/bpk-tv/Star_Sports_HD1_Hindi_BTS/output/index.mpd",
     keyId:"400131994b445d8c8817202248760fda",
     key:"2d56cb6f07a75b9aff165d534ae2bfc4",
     cookieUrl:"https://allrounder-live5.pages.dev/api/star-1-hindi.json"
@@ -189,22 +373,22 @@ line-height:1.6;
     const ui=new shaka.ui.Overlay(player,container,video);
 
     ui.configure({
-  addBigPlayButton: true,
-  controlPanelElements: [
-    "mute",           // First - volume/mute button
-    "play_pause",     // Second - play/pause button  
-    "time_and_duration", // Third - timeline timings (00:00 / 00:00)
-    "spacer",
-    "quality",
-    "picture_in_picture",
-    "fullscreen"
-  ],
-  seekBarColors: {
-    base: "white",
-    buffered: "red", 
-    played: "green"
-  }
-});
+      addBigPlayButton: true,
+      controlPanelElements: [
+        "mute",
+        "play_pause",
+        "time_and_duration",
+        "spacer",
+        "quality",
+        "picture_in_picture",
+        "fullscreen"
+      ],
+      seekBarColors: {
+        base: "white",
+        buffered: "red",
+        played: "green"
+      }
+    });
 
     player.configure({
       drm:{clearKeys:{[CONFIG.keyId]:CONFIG.key}},
@@ -254,7 +438,51 @@ line-height:1.6;
   });
 })();
 </script>
-  <script src="https://pl29102497.profitablecpmratenetwork.com/46/73/4e/46734e3edc77a0e83c8a5c6516dc6502.js"></script>
-</body>
-</html> 
 
+<!-- ── BANNER COUNTDOWN + AUTO-HIDE at 7:00 PM ── -->
+<script>
+(function() {
+  const banner  = document.getElementById("streamBanner");
+  const timerEl = document.getElementById("bannerTimer");
+
+  function getMatchTime() {
+    const now = new Date();
+    const match = new Date(now);
+    match.setHours(19, 30, 0, 0); // 7:00 PM today
+    return match;
+  }
+
+  function tick() {
+    const now   = new Date();
+    const match = getMatchTime();
+    const diff  = match - now;
+
+    // Hide banner at or past 7:00 PM
+    if (diff <= 0) {
+      banner.style.transition = "max-height 0.5s ease, opacity 0.5s ease, padding 0.5s ease";
+      banner.style.maxHeight  = "0";
+      banner.style.opacity    = "0";
+      banner.style.padding    = "0";
+      banner.style.borderBottom = "none";
+      clearInterval(interval);
+      return;
+    }
+
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    timerEl.textContent =
+      String(h).padStart(2,"0") + ":" +
+      String(m).padStart(2,"0") + ":" +
+      String(s).padStart(2,"0");
+  }
+
+  tick();
+  const interval = setInterval(tick, 1000);
+})();
+</script>
+
+<script src="https://pl29102497.profitablecpmratenetwork.com/46/73/4e/46734e3edc77a0e83c8a5c6516dc6502.js"></script>
+</body>
+</html>
