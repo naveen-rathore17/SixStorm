@@ -135,6 +135,12 @@ res.render("sport-2");
 app.get("/star-sport-1",(req,res)=>{
 res.render("webcric");
 });
+app.get("/iframe-testing",(req,res)=>{
+res.render("iframe",{
+  streamUrl: "https://allrounder-live2.pages.dev/star/modder-guy" 
+});
+});
+
 
 // app.get("/star_sport_live_Hd",(req,res)=>{
 // res.render("star-sport",{

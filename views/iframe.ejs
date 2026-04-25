@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SixStorm | Star Sports Hindi</title>
+    <link rel="icon" type="image/png" href="/images/favicon2.png" />
+    <link rel="shortcut icon" href="/images/favicon2.png" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      body {
+        background: radial-gradient(circle at top, #0f172a, #020617);
+      }
+    </style>
+  </head>
+
+  <body class="text-white min-h-screen flex flex-col">
+    <!-- 🔥 Navbar -->
+    <header
+      class="w-full border-b border-white/10 bg-black/40 backdrop-blur-md"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <h1 class="text-xl font-bold tracking-wide">
+          <span class="text-yellow-400">
+            ⚡ Six<span class="text-white">Storm</span>
+          </span>
+        </h1>
+        <a
+          href="/"
+          class="text-sm text-white/70 hover:text-cyan-400 transition"
+        >
+          Home
+        </a>
+      </div>
+    </header>
+
+    <!-- 🎬 Main Stream Section -->
+    <main class="flex-1 flex items-center justify-center px-4 py-6">
+      <div class="w-full max-w-6xl">
+        <!-- Title -->
+        <h2 class="text-lg sm:text-xl font-semibold mb-4 text-white/80">
+          IPL 2026 LIVE 🔴
+        </h2>
+
+        <!-- Video Container -->
+        <div
+          class="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
+        >
+          <!-- iframe -->
+          <iframe
+            src="<%= streamUrl %>"
+            class="w-full h-full"
+            frameborder="0"
+            allowfullscreen
+            allow="autoplay; encrypted-media"
+          >
+          </iframe>
+
+          <!-- Overlay glow -->
+          <div
+            class="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/40 to-transparent"
+          ></div>
+        </div>
+
+        <!-- Info -->
+        <p class="text-sm text-white/50 mt-3">
+          Powered by
+          <span class="text-yellow-400">
+            ⚡ Six<span class="text-white">Storm</span>
+          </span>
+          | Star Sports Hindi
+        </p>
+      </div>
+    </main>
+
+    <!-- 🔻 Footer -->
+    <footer
+      class="text-center text-white/40 text-sm py-4 border-t border-white/10"
+    >
+      © <%= new Date().getFullYear() %> SixStorm. All rights reserved.
+    </footer>
+  </body>
+</html>
