@@ -132,7 +132,7 @@ res.render("sport");
 app.get("/starsport-2",(req,res)=>{
 res.render("sport-2");
 });
-app.get("/iframe-testing",(req,res)=>{
+app.get("/star-sport-1-English",(req,res)=>{
 res.render("webcric");
 });
 app.get("/star-sport-1",(req,res)=>{
