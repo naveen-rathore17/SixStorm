@@ -137,7 +137,7 @@ res.render("webcric");
 });
 app.get("/star-sport-1",(req,res)=>{
 res.render("iframe",{
-  streamUrl: "https://allrounder-live2.pages.dev/star/modder-guy" 
+  streamUrl: "https://allrounder-live5.pages.dev/star/star-1-hindi" 
 });
 });
 
