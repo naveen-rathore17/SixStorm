@@ -132,10 +132,10 @@ res.render("sport");
 app.get("/starsport-2",(req,res)=>{
 res.render("sport-2");
 });
-app.get("/star-sport-1",(req,res)=>{
+app.get("/iframe-testing",(req,res)=>{
 res.render("webcric");
 });
-app.get("/iframe-testing",(req,res)=>{
+app.get("/star-sport-1",(req,res)=>{
 res.render("iframe",{
   streamUrl: "https://allrounder-live2.pages.dev/star/modder-guy" 
 });
