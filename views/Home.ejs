@@ -356,15 +356,19 @@
   <div class="ticker-inner">
     <span class="ticker-item">🏏 IPL 2026 <b>LIVE NOW</b></span>
     <span class="ticker-item">ICC T20 World Cup <b>Updates</b></span>
-    <span class="ticker-item">RCB vs DC— <b>Today</b></span>
+    <% if(matches && matches.length > 0){ %>
+  <span class="ticker-item">
+    <%= matches[0].team1 %> vs <%= matches[0].team2 %> — <b>Today</b>
+  </span>
+<% } %>
     <!-- <span class="ticker-item">KKR vs LSG— <b>Today</b></span> -->
-    <span class="ticker-item">SRH in <b>Top 3</b></span>
-    <span class="ticker-item">KL Rahul<b>152* Highest Run Against</b>PBKS</span>
+    <span class="ticker-item">SRH in <b>Top 4</b></span>
+    <span class="ticker-item">KL Rahul <b>152* Highest Run Against</b>PBKS</span>
     <span class="ticker-item">Watch <b>Star Sport 1</b> — Free</span>
-    <span class="ticker-item">SRH won by <b>5 wickets! vs RR</b></span>
+    <span class="ticker-item">KKR won by<b>SuperOver vs LSG</b></span>
     <span class="ticker-item">ICC T20 World Cup <b>Updates</b></span>
     <span class="ticker-item">CSK in — <b>Top 5</b></span>
-    <span class="ticker-item">RCB in <b>Top 3</b></span>
+    <span class="ticker-item">RCB in <b>Top 4</b></span>
     <span class="ticker-item">Kohli's <b>81</b> vs GT</span>
     <span class="ticker-item">Watch <b>Star Sport 1</b> — Free</span>
   </div>
