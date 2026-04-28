@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sixstorm-live.onrender.com/sitemap.xml
+Sitemap: https://sixstorm-live-0kkp.onrender.com/sitemap.xml
