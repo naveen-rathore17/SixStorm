@@ -132,15 +132,20 @@ res.render("sport");
 app.get("/starsport-2",(req,res)=>{
 res.render("sport-2");
 });
-app.get("/star-sport-1-English",(req,res)=>{
-res.render("webcric");
-});
+// app.get("/star-sport-1-English",(req,res)=>{
+// res.render("webcric");
+// });
 app.get("/star-sport-1",(req,res)=>{
 res.render("iframe",{
   streamUrl: "https://allrounderlive.in/hindi" 
 });
 });
 
+app.get("/star-sport-1-Hindi",(req,res)=>{
+res.render("webcric",{
+  streamUrl: "https://tatticdn.pages.dev/CDN3/?ch=H1" 
+});
+});
 
 // app.get("/star_sport_live_Hd",(req,res)=>{
 // res.render("star-sport",{
