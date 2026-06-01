@@ -356,19 +356,10 @@
   <div class="ticker-inner">
     <span class="ticker-item">🏏 IPL 2026 <b>LIVE NOW</b></span>
     <span class="ticker-item">ICC T20 World Cup <b>Updates</b></span>
-    <% if(matches && matches.length > 0){ %>
-  <span class="ticker-item">
-    <%= matches[0].team1 %> vs <%= matches[0].team2 %> — <b>Today</b>
-  </span>
-<% } %>
-    <!-- <span class="ticker-item">KKR vs LSG— <b>Today</b></span> -->
-    <span class="ticker-item">RR in <b>Top 4</b></span>
-    <span class="ticker-item">Vaibhav <b>93 Run Against </b> LSG</span>
+    <span class="ticker-item">IND vs AFG  <b>6-June</b></span>
+    <span class="ticker-item">RCB <b>Won 2nd Title vs</b> GT</span>
     <span class="ticker-item">Watch <b>Star Sport 1</b> — Free</span>
     <span class="ticker-item">ICC T20 World Cup <b>Updates</b></span>
-    <span class="ticker-item">SRH in — <b>Top </b>4</span>
-    <span class="ticker-item">RCB in <b>Top 4</b></span>
-    <span class="ticker-item">Kohli's <b>81</b> vs GT</span>
     <span class="ticker-item">Watch <b>Star Sport 1</b> — Free</span>
   </div>
 </div>
@@ -411,7 +402,7 @@
                 <span class="live-badge">
                   <span class="live-badge-dot"></span>Upcoming Live
                 </span>
-                <p class="match-title">IPL <%= match.matchDesc %></p>
+                <p class="match-title"><%= match.matchDesc %></p>
                 <div class="teams-row">
                   <div class="team-block">
                     <div class="team-ring"><img src="<%= match.team1Img %>" alt="<%= match.team1 %>" /></div>
@@ -464,13 +455,11 @@
 
   // SLIDER
   const slides = [
-     { img: "https://images.skyone.co.nz/mac/479214/DAM/56AEB58E-BE1E-4111-A5104905516ACC30.jpg", title: "IPL-2026 ", desc: "Revenge Week!" },
-    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/990/1779204610990-i", title: "Pant Removed as Test VC", desc: "Ro-Ko returns in ODI" },
-      { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/6753/1779216546753-i", title: "RR Chase 221 With Ease vs LSG ", desc: "RR won by 7 wickets!" },
-    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/9140/1779207879140-i", title: "Marsh's 96 vs RR", desc: "Top Knocks!" },
-    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/5753/1774882555753-i", title: "TATA IPL 2026", desc: "Watch the Biggest Cricket League – IPL" },
-    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/6372/1774719566372-i", title: "RCB Ready for Second Title", desc: "Can the king's soldiers lift another IPL trophy this season?" },
-    { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2251/1775906772251-i", title: "Abhishek's 28-ball 74 vs PBKS", desc: "Top knocks!" },
+     { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/1526/1780256791526-i", title: "CHAMPIONS 2026", desc: "RCB go back to back! lift 2nd Title" },
+      { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/3689/1780252573689-i", title: "Kohli's 75 vs GT in Final", desc: "Player Of The Match" },
+      { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/990/1779204610990-i", title: "Pant Removed as Test VC", desc: "Ro-Ko returns in ODI" },
+       { img: "  https://i.ytimg.com/vi/Iyx_UAJiraY/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLDml87dWFabZ-3lq8I7mltM7QF7kg", title: "IND vs AFG", desc: "6-10 June One-Off Test" },
+    
     { img: "https://img10.hotstar.com/image/upload/f_auto,q_90,w_1920/sources/r1/cms/prod/2526/1772995532526-i", title: "India Winning Moment", desc: "Team India Lifts Their Third T20 World Cup Trophy!" },
   ];
 

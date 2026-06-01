@@ -275,18 +275,18 @@ console.log("Using MANUAL MATCH");
 
 return [
 {
-matchDesc: "Match-16",
-team1: "RCB",
-team2: "RR",
+matchDesc: "One-off Test",
+team1: "IND",
+team2: "AFG",
 team1Img:
-"https://ssl.gstatic.com/onebox/media/sports/logos/optimized/xUS54-BA0dFZPMtbCiHkzQ_96x96.png",
+"https://ssl.gstatic.com/onebox/media/sports/logos/optimized/mlXOOB9HXxLpoeS2dHSgGA_96x96.png",
 team2Img:
-"https://ssl.gstatic.com/onebox/media/sports/logos/optimized/GqIU6xhQAnCpy_Cbr2LZRA_96x96.png",
-venue: "Barsapara Stadium",
-city: "Guwahati",
-date: "10 April 2026 7:30 PM",
+"https://ssl.gstatic.com/onebox/media/sports/logos/optimized/8rwaXVaUKfdJq31QgGtQrw_96x96.png",
+venue: "Maharaja Singh PCA Stadium",
+city: "Tira, Punjab",
+date: "06 June 2026 09:30 AM",
 startDate:
-new Date("2026-04-10T19:30:00+05:30").getTime()
+new Date("2026-06-06T09:30:00+05:30").getTime()
 }
 ];
 
