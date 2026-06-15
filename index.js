@@ -256,18 +256,18 @@ async function getMatches() {
 
   return [
     {
-      matchDesc: "ODI 1 of 3",
+      matchDesc: "ODI 2 of 3",
       team1: "IND",
       team2: "AFG",
       team1Img:
         "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/mlXOOB9HXxLpoeS2dHSgGA_96x96.png",
       team2Img:
         "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/8rwaXVaUKfdJq31QgGtQrw_96x96.png",
-      venue: "HPCA Stadium",
-      city: "Chelian",
-      date: "13 June 2026 01:30 PM",
+      venue: "Ekana International Cricket Stadium ",
+      city: "Lucknow",
+      date: "17 June 2026 01:30 PM",
       startDate:
-        new Date("2026-06-13T13:30:00+05:30").getTime()
+        new Date("2026-06-17T13:30:00+05:30").getTime()
     }
   ];
 
