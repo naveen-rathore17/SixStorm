@@ -256,18 +256,18 @@ async function getMatches() {
 
   return [
     {
-      matchDesc: "ODI 3 of 3",
+      matchDesc: "T20 1 of 5",
       team1: "IND",
-      team2: "AFG",
+      team2: "ENG",
       team1Img:
         "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/mlXOOB9HXxLpoeS2dHSgGA_96x96.png",
       team2Img:
-        "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/8rwaXVaUKfdJq31QgGtQrw_96x96.png",
-      venue: "M. A. Chidambaram Stadium",
-      city: "Chennai",
-      date: "20 June 2026 01:30 PM",
+        "https://ssl.gstatic.com/onebox/media/sports/logos/optimized/DTqIL8Ba3KIuxGkpXw5ayA_96x96.png",
+      venue: "Riverside Ground",
+      city: "England",
+      date: "01 July 2026 10:00 PM",
       startDate:
-        new Date("2026-06-20T13:30:00+05:30").getTime()
+        new Date("2026-07-01T22:00:00+05:30").getTime()
     }
   ];
 
